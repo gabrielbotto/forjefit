@@ -1,0 +1,21 @@
+{
+  "name": "ForjeFit — Força & Hipertrofia",
+  "short_name": "ForjeFit",
+  "description": "Aplicativo de musculação offline-first com periodização inteligente, recuperação muscular e análise de 1RM.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0D10",
+  "theme_color": "#0B0D10",
+  "lang": "pt-BR",
+  "categories": ["health", "fitness", "sports"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230B0D10'/%3E%3Cpath d='M132 132h248v58H198v58h140v58H198v94h-66V132z' fill='%23FF5F00'/%3E%3Ccircle cx='356' cy='356' r='36' fill='%23F8FAFC'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
