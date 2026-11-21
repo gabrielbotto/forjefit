@@ -11,9 +11,17 @@ const ui = {
   selectedExerciseId: ''
 };
 
+function toLocalIsoDate(ms) {
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 function getWeekBounds(offsetWeeks = 0) {
   const now = new Date();
-  const day = now.getDay(); // 0 = DOM
+  const day = now.getDay();
   const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + offsetWeeks * 7, 0, 0, 0, 0);
   const end = new Date(start.getTime() + 7 * 86400000 - 1);
   return { start, end };
@@ -21,11 +29,10 @@ function getWeekBounds(offsetWeeks = 0) {
 
 function calcStreakDays(sessions, daysPerWeekTarget = 4) {
   if (!sessions.length) return 0;
-  // Conta semanas consecutivas batendo ao menos 1 treino ou dias ativos com folga programada
-  const dayKeys = new Set(sessions.map((s) => new Date(s.startedAt).toISOString().slice(0, 10)));
+  const dayKeys = new Set(sessions.map((s) => toLocalIsoDate(s.startedAt)));
   const sorted = [...dayKeys].sort().reverse();
   let streak = 0;
-  const maxGapDays = daysPerWeekTarget <= 3 ? 3 : 2; // Descanso programado não quebra o streak
+  const maxGapDays = daysPerWeekTarget <= 3 ? 3 : 2;
   let ref = new Date();
   ref.setHours(0, 0, 0, 0);
 
@@ -87,7 +94,6 @@ export const ProgressView = {
       </header>
 
       <main class="screen-scroll">
-        <!-- Paginador Semanal + Régua de 7 Dias -->
         <section class="card" style="display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <button class="btn-icon" style="width:34px;height:34px" data-wk-shift="-1">‹</button>
@@ -120,7 +126,6 @@ export const ProgressView = {
           </div>
         </section>
 
-        <!-- Gráfico de Barras -->
         <section class="card" style="display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
             <span class="label-overline">Análises da Semana</span>
@@ -136,7 +141,6 @@ export const ProgressView = {
           ${renderBarChartSVG(bars)}
         </section>
 
-        <!-- Recuperação Muscular -->
         <section class="card" style="display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <span class="label-overline">Recuperação Muscular (16 Grupos)</span>
@@ -159,7 +163,6 @@ export const ProgressView = {
           </div>
         </section>
 
-        <!-- Distribuição Muscular (Radar Hexagonal) -->
         <section class="card" style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <span class="label-overline">Distribuição Muscular</span>
@@ -168,7 +171,6 @@ export const ProgressView = {
           ${renderRadarSVG(volData.radar, 12)}
         </section>
 
-        <!-- Músculo Alvo (Contagem Fracionada MEV / MAV / MRV) -->
         <section class="card" style="display:flex;flex-direction:column;gap:8px">
           <span class="label-overline">Volume Fracionado Semanal (Primário 1.0 • Sinergista 0.5)</span>
           ${Object.values(volData.byPattern).map((pat) => {
@@ -232,7 +234,6 @@ export const ProgressView = {
       const totalVol = filtS.reduce((a, b) => a + (b.totalVolumeKg || 0), 0);
       const totalPR = filtS.reduce((a, b) => a + (b.prCount || 0), 0);
 
-      // Pontos de 1RM para o exercício escolhido
       const rmPoints = [];
       for (const s of [...sessions].reverse()) {
         const ex = (s.exercises || []).find((e) => e.exerciseId === ui.selectedExerciseId);
@@ -300,7 +301,7 @@ export const ProgressView = {
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `forjefit-relatorio-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.download = `forjefit-relatorio-${toLocalIsoDate(Date.now())}.csv`;
         a.click();
         ctx.actions.toast('Relatório CSV exportado!', 'success');
       });
