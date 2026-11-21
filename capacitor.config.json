@@ -1,0 +1,22 @@
+{
+  "appId": "com.forjefit.app",
+  "appName": "ForjeFit",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "android": {
+    "backgroundColor": "#0B0D10",
+    "allowMixedContent": false,
+    "captureInput": true
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0B0D10",
+      "overlaysWebView": false
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_forjefit",
+      "iconColor": "#FF5F00"
+    }
+  }
+}
