@@ -26,9 +26,6 @@ export const ICONS = {
   edit: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`
 };
 
-/* =========================================================
- * MAPA ANATÔMICO INTERATIVO (FRENTE E COSTAS — 16 GRUPOS)
- * ========================================================= */
 function fillFor(colorMap, id) {
   return colorMap[id] || '#242A35';
 }
@@ -39,29 +36,20 @@ function buildFrontFigure(colorMap, interactive) {
   <svg viewBox="0 0 160 320" style="width:100%;height:auto;display:block" aria-label="Anatomia Frente">
     <circle cx="80" cy="24" r="15" fill="#1E242E" stroke="#343C4A" stroke-width="1.5"/>
     <rect x="73" y="39" width="14" height="10" rx="4" fill="#1E242E"/>
-    <!-- Ombros -->
     <ellipse cx="44" cy="64" rx="13" ry="12" fill="${fillFor(colorMap, 'ombros')}" ${attr('ombros')}/>
     <ellipse cx="116" cy="64" rx="13" ry="12" fill="${fillFor(colorMap, 'ombros')}" ${attr('ombros')}/>
-    <!-- Peito -->
     <path d="M54 55 Q80 62 106 55 L104 86 Q80 92 56 86 Z" fill="${fillFor(colorMap, 'peito')}" ${attr('peito')}/>
-    <!-- Bíceps -->
     <rect x="30" y="76" width="15" height="36" rx="7" fill="${fillFor(colorMap, 'biceps')}" ${attr('biceps')}/>
     <rect x="115" y="76" width="15" height="36" rx="7" fill="${fillFor(colorMap, 'biceps')}" ${attr('biceps')}/>
-    <!-- Antebraços -->
     <rect x="26" y="114" width="13" height="38" rx="6" fill="${fillFor(colorMap, 'antebracos')}" ${attr('antebracos')}/>
     <rect x="121" y="114" width="13" height="38" rx="6" fill="${fillFor(colorMap, 'antebracos')}" ${attr('antebracos')}/>
-    <!-- Oblíquos -->
     <path d="M55 90 L66 92 L65 144 L54 138 Z" fill="${fillFor(colorMap, 'obliquos')}" ${attr('obliquos')}/>
     <path d="M105 90 L94 92 L95 144 L106 138 Z" fill="${fillFor(colorMap, 'obliquos')}" ${attr('obliquos')}/>
-    <!-- Abdômen -->
     <rect x="68" y="92" width="24" height="54" rx="6" fill="${fillFor(colorMap, 'abdomen')}" ${attr('abdomen')}/>
-    <!-- Adutores -->
     <path d="M72 154 L80 162 L78 210 L69 205 Z" fill="${fillFor(colorMap, 'adutores')}" ${attr('adutores')}/>
     <path d="M88 154 L80 162 L82 210 L91 205 Z" fill="${fillFor(colorMap, 'adutores')}" ${attr('adutores')}/>
-    <!-- Quadríceps -->
     <path d="M53 152 L71 156 L69 224 L54 222 Z" fill="${fillFor(colorMap, 'quadriceps')}" ${attr('quadriceps')}/>
     <path d="M107 152 L89 156 L91 224 L106 222 Z" fill="${fillFor(colorMap, 'quadriceps')}" ${attr('quadriceps')}/>
-    <!-- Canelas/Panturrilhas -->
     <rect x="55" y="230" width="15" height="68" rx="7" fill="${fillFor(colorMap, 'panturrilhas')}" ${attr('panturrilhas')}/>
     <rect x="90" y="230" width="15" height="68" rx="7" fill="${fillFor(colorMap, 'panturrilhas')}" ${attr('panturrilhas')}/>
   </svg>`;
@@ -72,31 +60,21 @@ function buildBackFigure(colorMap, interactive) {
   return `
   <svg viewBox="0 0 160 320" style="width:100%;height:auto;display:block" aria-label="Anatomia Costas">
     <circle cx="80" cy="24" r="15" fill="#1E242E" stroke="#343C4A" stroke-width="1.5"/>
-    <!-- Trapézio -->
     <path d="M62 46 L98 46 L108 66 L80 82 L52 66 Z" fill="${fillFor(colorMap, 'trapezio')}" ${attr('trapezio')}/>
-    <!-- Ombros Posterior -->
     <ellipse cx="44" cy="65" rx="12" ry="11" fill="${fillFor(colorMap, 'ombros')}" ${attr('ombros')}/>
     <ellipse cx="116" cy="65" rx="12" ry="11" fill="${fillFor(colorMap, 'ombros')}" ${attr('ombros')}/>
-    <!-- Costas (Dorsal) -->
     <path d="M53 68 L80 84 L107 68 L102 122 L58 122 Z" fill="${fillFor(colorMap, 'costas')}" ${attr('costas')}/>
-    <!-- Lombar -->
     <rect x="64" y="124" width="32" height="24" rx="6" fill="${fillFor(colorMap, 'lombar')}" ${attr('lombar')}/>
-    <!-- Tríceps -->
     <rect x="30" y="77" width="15" height="36" rx="7" fill="${fillFor(colorMap, 'triceps')}" ${attr('triceps')}/>
     <rect x="115" y="77" width="15" height="36" rx="7" fill="${fillFor(colorMap, 'triceps')}" ${attr('triceps')}/>
-    <!-- Antebraços -->
     <rect x="26" y="115" width="13" height="36" rx="6" fill="${fillFor(colorMap, 'antebracos')}" ${attr('antebracos')}/>
     <rect x="121" y="115" width="13" height="36" rx="6" fill="${fillFor(colorMap, 'antebracos')}" ${attr('antebracos')}/>
-    <!-- Abdutores -->
     <rect x="49" y="152" width="9" height="34" rx="4" fill="${fillFor(colorMap, 'abdutores')}" ${attr('abdutores')}/>
     <rect x="102" y="152" width="9" height="34" rx="4" fill="${fillFor(colorMap, 'abdutores')}" ${attr('abdutores')}/>
-    <!-- Glúteos -->
     <ellipse cx="69" cy="168" rx="13" ry="17" fill="${fillFor(colorMap, 'gluteos')}" ${attr('gluteos')}/>
     <ellipse cx="91" cy="168" rx="13" ry="17" fill="${fillFor(colorMap, 'gluteos')}" ${attr('gluteos')}/>
-    <!-- Posteriores -->
     <rect x="56" y="187" width="18" height="44" rx="8" fill="${fillFor(colorMap, 'posteriores')}" ${attr('posteriores')}/>
     <rect x="86" y="187" width="18" height="44" rx="8" fill="${fillFor(colorMap, 'posteriores')}" ${attr('posteriores')}/>
-    <!-- Panturrilhas -->
     <ellipse cx="64" cy="256" rx="10" ry="24" fill="${fillFor(colorMap, 'panturrilhas')}" ${attr('panturrilhas')}/>
     <ellipse cx="96" cy="256" rx="10" ry="24" fill="${fillFor(colorMap, 'panturrilhas')}" ${attr('panturrilhas')}/>
   </svg>`;
@@ -122,9 +100,6 @@ export function renderAnatomySVG({ colorMap = {}, side = 'both', interactive = f
     </div>`;
 }
 
-/* =========================================================
- * GRÁFICO DE RADAR HEXAGONAL (DISTRIBUIÇÃO MUSCULAR)
- * ========================================================= */
 export function renderRadarSVG(radarData, idealSets = 12) {
   const axes = [
     { key: 'PEITORAL', label: 'Peitoral' },
@@ -167,9 +142,6 @@ export function renderRadarSVG(radarData, idealSets = 12) {
   </svg>`;
 }
 
-/* =========================================================
- * GRÁFICO DE BARRAS SEMANAL COM LINHA DE MÉDIA
- * ========================================================= */
 export function renderBarChartSVG(bars) {
   const maxVal = Math.max(1, ...bars.map((b) => b.value));
   const avg = bars.reduce((a, b) => a + b.value, 0) / Math.max(1, bars.length);
@@ -194,9 +166,6 @@ export function renderBarChartSVG(bars) {
   </svg>`;
 }
 
-/* =========================================================
- * GRÁFICO DE EVOLUÇÃO DE 1RM POR EXERCÍCIO
- * ========================================================= */
 export function render1RMChartSVG(points, unitSystem = 'METRIC') {
   if (!points || points.length === 0) {
     return `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px">Registre séries concluídas neste exercício para gerar a curva de 1RM estimado.</div>`;
@@ -227,9 +196,6 @@ export function render1RMChartSVG(points, unitSystem = 'METRIC') {
   </svg>`;
 }
 
-/* =========================================================
- * ÁUDIO OFFLINE DO CRONÔMETRO DE DESCANSO (WEB AUDIO API)
- * ========================================================= */
 export function playTimerBeep() {
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -250,9 +216,20 @@ export function playTimerBeep() {
   } catch (_) {}
 }
 
-/* =========================================================
- * ESTÚDIO DE CARD SOCIAL (CANVAS PNG — OBSIDIAN & STICKER)
- * ========================================================= */
+function drawRoundedPanel(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(x, y, w, h, r);
+  } else {
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+}
+
 export function renderSocialCardCanvas(canvas, { session, photoImg = null, unitSystem = 'METRIC', mode = 'card' }) {
   const ctx = canvas.getContext('2d');
   const W = 900;
@@ -283,18 +260,15 @@ export function renderSocialCardCanvas(canvas, { session, photoImg = null, unitS
     }
   }
 
-  // Painel principal translúcido
   const panelY = mode === 'sticker' ? 320 : 620;
   const panelH = 490;
   ctx.fillStyle = mode === 'sticker' ? 'rgba(11,13,16,0.82)' : 'rgba(20,23,28,0.86)';
   ctx.strokeStyle = 'rgba(255,95,0,0.65)';
   ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.roundRect(56, panelY, W - 112, panelH, 34);
+  drawRoundedPanel(ctx, 56, panelY, W - 112, panelH, 34);
   ctx.fill();
   ctx.stroke();
 
-  // Marca ForjeFit
   ctx.fillStyle = '#FF5F00';
   ctx.font = '700 32px "Space Grotesk", sans-serif';
   ctx.fillText('FORJEFIT', 100, panelY + 66);
@@ -303,12 +277,10 @@ export function renderSocialCardCanvas(canvas, { session, photoImg = null, unitS
   ctx.font = '600 22px Inter, sans-serif';
   ctx.fillText(new Date(session.finishedAt || Date.now()).toLocaleDateString('pt-BR'), W - 245, panelY + 66);
 
-  // Título da Sessão
   ctx.fillStyle = '#F8FAFC';
   ctx.font = '700 44px "Space Grotesk", sans-serif';
   ctx.fillText((session.dayTitle || 'Treino Concluído').slice(0, 26), 100, panelY + 132);
 
-  // Métricas (3 colunas)
   const metrics = [
     { label: 'TEMPO', value: formatDurationClock(session.durationSec || 0) },
     { label: 'VOLUME', value: formatVolume(session.totalVolumeKg || 0, unitSystem) },
@@ -325,7 +297,6 @@ export function renderSocialCardCanvas(canvas, { session, photoImg = null, unitS
     ctx.fillText(m.value, x, panelY + 265);
   });
 
-  // Músculos trabalhados
   const workedIds = [...new Set((session.exercises || []).map((e) => e.primaryMuscle))];
   const lookup = Object.fromEntries(MUSCLE_GROUPS.map((m) => [m.id, m.name]));
   const names = workedIds.map((id) => lookup[id] || id).slice(0, 5).join('  •  ');
