@@ -22,16 +22,8 @@
   <div id="modal-root"></div>
   <div id="toast-root" class="toast-container" aria-live="polite"></div>
 
-  <script type="module">
-  function showErr(err) {
-    document.body.innerHTML = `<pre style="color:#ff6b6b;background:#0b0d10;padding:16px;white-space:pre-wrap;font-size:13px;line-height:1.4">ERRO:\n${err?.stack || err}</pre>`;
-  }
-  window.addEventListener('error', (e) => showErr(e.message));
-  window.addEventListener('unhandledrejection', (e) => showErr(e.reason));
-  import('./src/app.js').catch(showErr);
-</script>
-<script>
-  
+  <script type="module" src="./src/app.js"></script>
+  <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
