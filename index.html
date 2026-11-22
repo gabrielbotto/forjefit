@@ -299,10 +299,139 @@
                     </div>
                     <div id="ex-modal-sets" class="space-y-2.5"></div>
                 </div>
+
+                <!-- Cronômetro de Descanso Automático (Baseado nas Preferências) -->
+                <div id="rest-timer-banner" class="hidden bg-neon/15 border border-neon rounded-2xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-xl">⏱️</span>
+                        <div>
+                            <p class="text-[10px] font-black text-neon uppercase">Tempo de Descanso</p>
+                            <p id="rest-timer-display" class="text-lg font-black text-white leading-none">90s</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="ajustarDescansoAtivo(15)" class="px-2.5 py-1 rounded-lg bg-[#241A13] text-xs font-bold text-white">+15s</button>
+                        <button onclick="pularDescansoAtivo()" class="px-3 py-1 rounded-lg bg-neon text-black text-xs font-black">Pular</button>
+                    </div>
+                </div>
             </div>
             <div class="p-4 border-t border-[#241A13]">
                 <button onclick="concluirExercicioAtual()" class="w-full py-3.5 rounded-full neon-btn font-black text-sm tracking-wide">CONCLUIR EXERCÍCIO</button>
             </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- MODAL: PREFERÊNCIAS DO PLANO (VÍDEOS 1 E 2)               -->
+        <!-- ========================================================= -->
+        <div id="modal-preferencias" class="hidden absolute inset-0 z-40 bg-[#090706] flex flex-col">
+            <div class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#241A13]">
+                <button onclick="tentarFecharPreferencias()" class="w-10 h-10 rounded-full bg-[#1B140F] border border-[#30241B] flex items-center justify-center text-white font-bold">✕</button>
+                <h2 class="font-black text-base text-white">Meu plano</h2>
+                <button id="pref-save-btn" onclick="salvarPreferencias()" class="w-10 h-10 rounded-full bg-neon text-black flex items-center justify-center font-black shadow-[0_0_15px_rgba(255,106,0,0.5)]">✓</button>
+            </div>
+            <div id="pref-body" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+
+            <!-- Sub-modal Bottom Sheet (Variabilidade / Descanso / Alterações não salvas) -->
+            <div id="pref-sheet-backdrop" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end">
+                <div id="pref-sheet-content" class="w-full bg-[#14100D] border-t border-neon/40 rounded-t-3xl p-5 max-h-[82%] overflow-y-auto"></div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- MODAL: RECUPERAÇÃO MUSCULAR (FRENTE / COSTAS + INFO)      -->
+        <!-- ========================================================= -->
+        <div id="modal-recuperacao" class="hidden absolute inset-0 z-40 bg-[#080605] flex flex-col">
+            <div class="flex items-center justify-between px-5 pt-4 pb-3">
+                <button onclick="document.getElementById('modal-recuperacao').classList.add('hidden')" class="w-10 h-10 rounded-full bg-[#1B140F] border border-[#30241B] flex items-center justify-center text-white">‹</button>
+                <h2 class="font-black text-base text-white">Recuperação Muscular</h2>
+                <button onclick="abrirInfoRecuperacao()" class="w-10 h-10 rounded-full bg-[#1B140F] border border-[#30241B] flex items-center justify-center text-neon font-black">i</button>
+            </div>
+            <div id="recup-body" class="flex-1 overflow-y-auto px-5 pb-6 flex flex-col justify-between"></div>
+            <!-- Info Sheet -->
+            <div id="recup-info-sheet" class="hidden absolute inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end" onclick="this.classList.add('hidden')">
+                <div class="w-full bg-[#15110E] border-t border-neon/40 rounded-t-3xl p-6 space-y-3" onclick="event.stopPropagation()">
+                    <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-2"></div>
+                    <h3 class="text-lg font-black text-white">Recuperação Muscular</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">A Recuperação Muscular estima o quão pronto cada músculo está com base nos seus treinos recentes.</p>
+                    <p class="text-xs font-bold text-neon pt-1">Como é calculado</p>
+                    <ul class="text-xs text-gray-300 space-y-1 list-disc pl-4">
+                        <li>Volume de treino (séries, repetições, carga)</li>
+                        <li>Músculos principais contam integralmente</li>
+                        <li>Músculos secundários contam parcialmente</li>
+                        <li>Tempo desde o último treino</li>
+                    </ul>
+                    <p class="text-xs font-bold text-neon pt-1">Status de Recuperação</p>
+                    <ul class="text-xs text-gray-300 space-y-1 list-disc pl-4">
+                        <li><strong class="text-white">Pronto</strong> – Pode ser treinado novamente</li>
+                        <li><strong class="text-amber-400">Recuperando</strong> – Ainda se reconstruindo</li>
+                        <li><strong class="text-red-400">Fadigado</strong> – Precisa de mais descanso</li>
+                    </ul>
+                    <button onclick="document.getElementById('recup-info-sheet').classList.add('hidden')" class="w-full py-3 mt-2 rounded-full neon-btn font-black text-xs">ENTENDI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- MODAL: DISTRIBUIÇÃO MUSCULAR DETALHADA (VÍDEO 3)          -->
+        <!-- ========================================================= -->
+        <div id="modal-distribuicao" class="hidden absolute inset-0 z-40 bg-[#080605] flex flex-col">
+            <div class="flex items-center justify-between px-5 pt-4 pb-3">
+                <button onclick="document.getElementById('modal-distribuicao').classList.add('hidden')" class="w-10 h-10 rounded-full bg-[#1B140F] border border-[#30241B] flex items-center justify-center text-white">‹</button>
+                <h2 class="font-black text-base text-white">Distribuição Muscular</h2>
+                <div class="w-10"></div>
+            </div>
+            <div id="dist-body" class="flex-1 overflow-y-auto px-5 pb-6 space-y-4"></div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- MODAL: PAYWALL "TREINE SEM ANÚNCIOS" (VÍDEOS 2 E 3)       -->
+        <!-- ========================================================= -->
+        <div id="modal-paywall-ads" class="hidden absolute inset-0 z-50 bg-[#080605] flex flex-col justify-between p-6">
+            <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full border border-neon/40 bg-neon/10 text-neon text-[10px] font-black tracking-wider">OFERTA LIMITADA</span>
+                <button onclick="document.getElementById('modal-paywall-ads').classList.add('hidden')" class="w-9 h-9 rounded-full bg-[#1A130E] text-gray-300 font-bold">✕</button>
+            </div>
+            <div class="space-y-5 my-auto">
+                <div>
+                    <h2 class="text-2xl font-black text-white leading-tight">Treine sem anúncios.<br>Desbloqueie a <span class="text-neon">melhor experiência.</span></h2>
+                    <p class="text-xs text-gray-400 mt-2">Assine o Premium e tenha acesso completo sem interrupções.</p>
+                </div>
+                <div class="space-y-3">
+                    <div id="pw-opt-premium" onclick="selecionarPlanoPaywall('premium')" class="relative p-4 rounded-2xl neon-card-active cursor-pointer transition">
+                        <span class="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-neon text-black text-[9px] font-black">RECOMENDADO</span>
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-sm text-white">Premium Anual</p>
+                            <div class="text-right">
+                                <p class="font-black text-base text-white">R$14,99<span class="text-xs font-normal text-gray-300">/mês</span></p>
+                                <p class="text-[10px] text-gray-400">Cobrado R$ 179,90/ano</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pw-opt-free" onclick="selecionarPlanoPaywall('free')" class="p-4 rounded-2xl bg-[#14100D] border border-[#2B2017] cursor-pointer transition">
+                        <p class="font-bold text-sm text-gray-200">Grátis com Anúncios</p>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Funcionalidades limitadas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <button id="pw-cta-btn" onclick="confirmarEscolhaPaywall()" class="w-full py-4 rounded-full neon-btn font-black text-sm">ASSINAR O PREMIUM</button>
+                <div class="flex justify-center gap-6 text-[10px] font-bold text-gray-400">
+                    <button onclick="abrirModalLegal('termos')" class="hover:text-neon">TERMOS</button>
+                    <button onclick="abrirModalLegal('privacidade')" class="hover:text-neon">PRIVACIDADE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- MODAL: CENTRAL DE AJUDA (FAQ) & POLÍTICA DE PRIVACIDADE   -->
+        <!-- ========================================================= -->
+        <div id="modal-faq-legal" class="hidden absolute inset-0 z-50 bg-[#080605] flex flex-col">
+            <div class="flex items-center justify-between px-5 pt-4 pb-3 border-b border-[#241A13]">
+                <button onclick="document.getElementById('modal-faq-legal').classList.add('hidden')" class="w-9 h-9 rounded-full bg-[#1B140F] text-white">‹</button>
+                <h2 id="faq-legal-title" class="font-black text-base text-white">Central de Ajuda</h2>
+                <div class="w-9"></div>
+            </div>
+            <div id="faq-legal-body" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
         </div>
 
         <!-- ========================================================= -->
@@ -534,7 +663,47 @@
                 addCardio: false,
                 fullBody: false,
                 muscles: ['Peito', 'Costas']
-            }
+            },
+
+            // Preferências do Plano (Vídeos 1 e 2)
+            preferences: {
+                variability: 'Equilibrado',
+                focusMuscles: ['Peito', 'Costas', 'Ombros', 'Bíceps', 'Tríceps', 'Quadríceps'],
+                fullBody: false,
+                injuries: [],
+                autoWeight: true,
+                restEnabled: true,
+                restSeconds: 90
+            },
+
+            // Filtros e Sub-telas de Treinos (Vídeo 2)
+            treinosView: 'home', // 'home' | 'planos' | 'favoritos'
+            planFilterLevel: 'Intermediário',
+            planFilterEquip: 'Academia Grande',
+            favSubTab: 'planos', // 'rapidos' | 'planos'
+
+            // Biblioteca de Planos de Treino (Vídeo 2)
+            trainingPlans: [
+                { id: 'p1', title: 'Glúteo Perfeito Nível Médio', duration: '50 min', level: 'Intermediário', equip: 'Academia Grande', fav: false, img: 'https://placehold.co/400x260/2B1406/FF6A00?text=GLUTEO+PERFEITO' },
+                { id: 'p2', title: 'Fortalecimento de Pernas Nível Médio', duration: '50 min', level: 'Intermediário', equip: 'Academia Grande', fav: false, img: 'https://placehold.co/400x260/1F1006/FF6A00?text=PERNAS+FORTES' },
+                { id: 'p3', title: 'Braços Gigantes Nível Médio', duration: '50 min', level: 'Intermediário', equip: 'Academia Grande', fav: true, img: 'https://placehold.co/400x260/261205/FF6A00?text=BRACOS+GIGANTES' },
+                { id: 'p4', title: 'Corpo Inteiro Intermediário', duration: '50 min', level: 'Intermediário', equip: 'Academia Grande', fav: false, img: 'https://placehold.co/400x260/241308/FF6A00?text=CORPO+INTEIRO' },
+                { id: 'p5', title: 'Costa Tonificada Nível Médio', duration: '40 min', level: 'Intermediário', equip: 'Academia Grande', fav: false, img: 'https://placehold.co/400x260/1D0F06/FF6A00?text=COSTA+TONIFICADA' },
+                { id: 'p6', title: 'Calistenia em Casa Total', duration: '35 min', level: 'Iniciante', equip: 'Peso Corporal', fav: false, img: 'https://placehold.co/400x260/2A1508/FF6A00?text=CALISTENIA+EM+CASA' }
+            ],
+
+            // Estado da Aba Progresso (Vídeos 2 e 3)
+            progressChartTab: 'tempo', // 'tempo' | 'calorias' | 'volume' | 'reps'
+            distPeriod: 'SEMANA', // 'SEMANA' | 'MÊS' | 'ANO'
+            recupBackView: false,
+            expandedMuscleGroups: {},
+            muscleSetCounts: {
+                Peito: 0, Ombros: 0, Tríceps: 0,
+                Costas: 0, Bíceps: 0, Antebraços: 0, Trapézio: 0,
+                Quadríceps: 0, Posteriores: 0, Glúteos: 0, Panturrilhas: 0, Adutores: 0,
+                Abdômen: 0
+            },
+            paywallChoice: 'premium'
         };
 
         // =========================================================================
@@ -1162,6 +1331,7 @@
         function mudarAba(aba) {
             STATE.activeTab = aba;
             STATE.showQuickWorkout = false;
+            STATE.treinosView = 'home';
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('text-neon', 'bg-neon/10');
                 el.classList.add('text-gray-400');
@@ -1189,7 +1359,8 @@
         // --- ABA 1: MEU PLANO ---
         function renderAbaPlano(container) {
             const dayTitles = ['DIA 1', 'DIA 2', 'DIA 3', 'DIA 4'];
-            const dayExercises = STATE.exercises.filter(e => e.day === STATE.activeDay);
+            const injured = STATE.preferences.injuries || [];
+            const dayExercises = STATE.exercises.filter(e => e.day === STATE.activeDay && !injured.includes(e.muscle));
 
             container.innerHTML = `
                 <div class="px-5 pt-2 space-y-5">
@@ -1200,10 +1371,20 @@
                             <h1 class="text-xl font-black text-white">Meu plano</h1>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="abrirOferta77()" class="w-9 h-9 rounded-full bg-neon text-black flex items-center justify-center font-black shadow-[0_0_15px_rgba(255,106,0,0.5)]">👑</button>
-                            <button onclick="abrirAdmin()" class="px-3 h-9 rounded-full bg-[#1C1510] border border-[#32251B] text-xs font-bold text-gray-200 hover:border-neon">⚙️ Admin</button>
+                            <button onclick="abrirPaywallAds()" class="w-9 h-9 rounded-full bg-neon text-black flex items-center justify-center font-black shadow-[0_0_15px_rgba(255,106,0,0.5)]">👑</button>
+                            <button onclick="abrirPreferencias()" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] hover:border-neon flex items-center justify-center text-white" title="Preferências do Plano">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            </button>
+                            <button onclick="abrirAdmin()" class="px-2.5 h-9 rounded-full bg-[#1C1510] border border-[#32251B] text-[11px] font-bold text-gray-200 hover:border-neon">⚙️ Admin</button>
                         </div>
                     </div>
+
+                    ${injured.length > 0 ? `
+                        <div onclick="abrirPreferencias()" class="bg-red-950/40 border border-red-500/40 rounded-2xl px-3.5 py-2 flex items-center justify-between text-[11px] cursor-pointer">
+                            <span class="text-red-300 font-semibold">⚠️ Proteção ativa: ${injured.join(', ')}</span>
+                            <span class="text-red-400 font-bold">Editar ›</span>
+                        </div>
+                    ` : ''}
 
                     <!-- Seletor de Dias -->
                     <div class="flex gap-2 overflow-x-auto pb-1">
@@ -1214,13 +1395,13 @@
 
                     <!-- Contador -->
                     <div class="flex items-center justify-between">
-                        <p class="text-xs font-black tracking-wider text-gray-300 uppercase">${dayExercises.length} EXERCÍCIOS</p>
+                        <p class="text-xs font-black tracking-wider text-gray-300 uppercase">${dayExercises.length} EXERCÍCIOS • DESCANSO ${STATE.preferences.restEnabled ? STATE.preferences.restSeconds + 's' : 'OFF'}</p>
                         <button onclick="abrirAdmin('exercicios')" class="text-[11px] font-bold text-neon hover:underline">+ Editar / Fotos</button>
                     </div>
 
                     <!-- Lista de Exercícios com Imagens que se Mexem -->
                     <div class="space-y-3">
-                        ${dayExercises.map(ex => `
+                        ${dayExercises.length === 0 ? `<p class="text-center text-xs text-gray-400 py-8">Todos os exercícios deste dia foram ocultados devido às lesões selecionadas.</p>` : dayExercises.map(ex => `
                             <div onclick="abrirModalExercicio('${ex.id}')" class="bg-[#14100D] border border-[#281E16] hover:border-neon/60 rounded-2xl p-3 flex items-center gap-3.5 cursor-pointer transition">
                                 ${renderExerciseMedia(ex, 'w-16 h-16')}
                                 <div class="flex-1 min-w-0">
@@ -1243,18 +1424,101 @@
                             <span class="flex items-center gap-3"><span class="w-7 h-7 rounded-full bg-[#241B14] text-neon flex items-center justify-center">🔥</span> REGISTRAR CARDIO</span>
                             <span>›</span>
                         </button>
-                        <button onclick="if(STATE.exercises.filter(e=>e.day===STATE.activeDay)[0]) abrirModalExercicio(STATE.exercises.filter(e=>e.day===STATE.activeDay)[0].id)" class="w-full py-4 rounded-full neon-btn font-black text-sm tracking-wide mt-2">INICIAR TREINO</button>
+                        <button onclick="if(${dayExercises.length}>0) abrirModalExercicio('${dayExercises[0] ? dayExercises[0].id : ''}')" class="w-full py-4 rounded-full neon-btn font-black text-sm tracking-wide mt-2">INICIAR TREINO</button>
                     </div>
                 </div>`;
         }
 
-        // --- ABA 2: TREINOS ---
+        // --- ABA 2: TREINOS (HOME, VER TUDO PLANOS DE TREINO, FAVORITOS) ---
         function renderAbaTreinos(container) {
+            // Subtela: VER TUDO — PLANO DE TREINO COM FILTROS (VÍDEO 2)
+            if (STATE.treinosView === 'planos') {
+                const filteredPlans = STATE.trainingPlans.filter(p => p.level === STATE.planFilterLevel && p.equip === STATE.planFilterEquip);
+                container.innerHTML = `
+                    <div class="px-5 pt-2 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <button onclick="STATE.treinosView='home'; renderMainTab();" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] flex items-center justify-center text-white">‹</button>
+                            <h1 class="text-lg font-black text-white">Plano de Treino</h1>
+                            <button onclick="STATE.treinosView='favoritos'; renderMainTab();" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] flex items-center justify-center text-neon">★</button>
+                        </div>
+
+                        <!-- Filtros Nível e Equipamento -->
+                        <div class="flex gap-2">
+                            <select onchange="STATE.planFilterLevel=this.value; renderMainTab();" class="px-3.5 py-2 rounded-full bg-[#16110D] border border-[#30241B] text-xs font-bold text-white outline-none focus:border-neon">
+                                ${['Iniciante', 'Intermediário', 'Avançado'].map(l => `<option value="${l}" ${STATE.planFilterLevel===l?'selected':''}>${l}</option>`).join('')}
+                            </select>
+                            <select onchange="STATE.planFilterEquip=this.value; renderMainTab();" class="flex-1 px-3.5 py-2 rounded-full bg-[#16110D] border border-[#30241B] text-xs font-bold text-white outline-none focus:border-neon">
+                                ${['Academia Grande', 'Academia em Casa', 'Academia Pequena', 'Peso Corporal'].map(eq => `<option value="${eq}" ${STATE.planFilterEquip===eq?'selected':''}>${eq}</option>`).join('')}
+                            </select>
+                        </div>
+
+                        <!-- Lista de Planos ou Estado Vazio -->
+                        ${filteredPlans.length === 0 ? `
+                            <div class="py-16 text-center space-y-2">
+                                <p class="text-4xl opacity-40">🏋️</p>
+                                <p class="font-bold text-sm text-white">Nenhum plano de treino encontrado</p>
+                                <p class="text-xs text-gray-400 max-w-xs mx-auto">Tente ajustar os filtros de nível e equipamento para encontrar mais opções de treinos.</p>
+                            </div>
+                        ` : `
+                            <div class="space-y-3">
+                                ${filteredPlans.map(p => `
+                                    <div onclick="STATE.showQuickWorkout=true; gerarTreinoRapido(); renderMainTab();" class="relative h-44 rounded-3xl overflow-hidden border border-white/10 cursor-pointer group">
+                                        <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                        <button onclick="event.stopPropagation(); alternarFavPlano('${p.id}')" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center text-base ${p.fav ? 'text-neon' : 'text-white'}">${p.fav ? '★' : '☆'}</button>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent p-4 flex flex-col justify-end pointer-events-none">
+                                            <span class="text-[11px] text-neon font-bold">${p.level}</span>
+                                            <p class="font-black text-base text-white">${p.title}</p>
+                                            <p class="text-[11px] text-gray-300 mt-0.5">${p.duration} • ${p.equip}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>`;
+                return;
+            }
+
+            // Subtela: FAVORITOS (TREINOS RÁPIDOS / PLANOS DE TREINO - VÍDEO 2)
+            if (STATE.treinosView === 'favoritos') {
+                const favPlans = STATE.trainingPlans.filter(p => p.fav);
+                container.innerHTML = `
+                    <div class="px-5 pt-2 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <button onclick="STATE.treinosView='home'; renderMainTab();" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] flex items-center justify-center text-white">←</button>
+                            <h1 class="text-lg font-black text-white">Favoritos</h1>
+                        </div>
+                        <div class="grid grid-cols-2 bg-[#14100D] p-1 rounded-full border border-[#2A1F17] text-[10px] font-extrabold">
+                            <button onclick="STATE.favSubTab='rapidos'; renderMainTab();" class="py-2 rounded-full ${STATE.favSubTab==='rapidos' ? 'bg-neon text-black' : 'text-gray-400'}">TREINOS RÁPIDOS</button>
+                            <button onclick="STATE.favSubTab='planos'; renderMainTab();" class="py-2 rounded-full ${STATE.favSubTab==='planos' ? 'bg-neon text-black' : 'text-gray-400'}">PLANOS DE TREINO</button>
+                        </div>
+                        ${STATE.favSubTab === 'rapidos' ? `
+                            <p class="text-center text-xs text-gray-400 py-16">Nenhum treino rápido favoritado ainda</p>
+                        ` : (favPlans.length === 0 ? `
+                            <p class="text-center text-xs text-gray-400 py-16">Nenhum plano de treino favoritado ainda</p>
+                        ` : `
+                            <div class="space-y-3">
+                                ${favPlans.map(p => `
+                                    <div onclick="STATE.showQuickWorkout=true; gerarTreinoRapido(); renderMainTab();" class="bg-[#14100D] border border-neon/40 rounded-2xl p-3 flex items-center gap-3 cursor-pointer">
+                                        <img src="${p.img}" class="w-16 h-16 rounded-xl object-cover">
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-bold text-sm text-white truncate">${p.title}</p>
+                                            <p class="text-[11px] text-gray-400">${p.duration} • ${p.equip}</p>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); alternarFavPlano('${p.id}')" class="text-neon text-lg px-2">★</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `)}
+                    </div>`;
+                return;
+            }
+
+            // Home da Aba Treinos
             container.innerHTML = `
                 <div class="px-5 pt-2 space-y-5">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2"><span class="text-neon text-xl">🏋️</span><h1 class="text-xl font-black text-white">Treinos</h1></div>
-                        <button onclick="mudarAba('exercicios'); STATE.exSubTab='favoritos'; renderMainTab();" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] flex items-center justify-center text-neon">★</button>
+                        <button onclick="STATE.treinosView='favoritos'; renderMainTab();" class="w-9 h-9 rounded-full bg-[#1C1510] border border-[#32251B] flex items-center justify-center text-neon">★</button>
                     </div>
 
                     <!-- Recursos Personalizados -->
@@ -1273,11 +1537,11 @@
                         </div>
                     </div>
 
-                    <!-- Treinos Rápidos (Com capas editáveis no Admin) -->
+                    <!-- Planos de Treino (com botão Ver tudo) -->
                     <div>
                         <div class="flex items-center justify-between mb-3">
-                            <p class="text-[11px] font-black text-gray-300 uppercase">TREINOS PARA <span class="text-neon underline">${STATE.userProfile.experience.toUpperCase()}</span></p>
-                            <button onclick="abrirAdmin('fotos')" class="text-[11px] text-neon font-bold">Trocar capas</button>
+                            <p class="text-[11px] font-black text-gray-300 uppercase">PLANOS DE TREINO <span class="text-neon underline">${STATE.userProfile.experience.toUpperCase()}</span></p>
+                            <button onclick="STATE.treinosView='planos'; renderMainTab();" class="text-xs text-neon font-bold hover:underline">Ver tudo</button>
                         </div>
                         <div class="flex gap-3 overflow-x-auto pb-2">
                             ${STATE.workoutCovers.map(c => `
@@ -1295,119 +1559,34 @@
                 </div>`;
         }
 
-        // --- SUBTELA: TREINO RÁPIDO (EXATAMENTE COMO NO VÍDEO 2) ---
-        function renderTelaTreinoRapido(container) {
-            const qc = STATE.quickConfig;
-            const allMuscles = ['Peito', 'Costas', 'Ombros', 'Bíceps', 'Tríceps', 'Quadríceps', 'Glúteos', 'Posteriores', 'Abdômen', 'Adutores', 'Abdutores', 'Panturrilhas'];
-
-            container.innerHTML = `
-                <div class="px-5 pt-2 space-y-5">
-                    <div class="flex items-center justify-between">
-                        <button onclick="STATE.showQuickWorkout=false; STATE.quickWorkoutResult=null; renderMainTab();" class="flex items-center gap-2 text-white font-black text-lg">
-                            <span class="text-neon">←</span> ⚡ Treino rápido
-                        </button>
-                        <button onclick="abrirOferta77()" class="w-9 h-9 rounded-full bg-neon text-black flex items-center justify-center font-black">👑</button>
-                    </div>
-
-                    ${STATE.quickWorkoutResult ? `
-                        <!-- Resultado Gerado do Treino Rápido -->
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <p class="text-xs font-black text-neon uppercase">${STATE.quickWorkoutResult.length} EXERCÍCIOS GERADOS</p>
-                                <button onclick="STATE.quickWorkoutResult=null; renderMainTab();" class="text-xs text-gray-300 underline">Ajustar filtros</button>
-                            </div>
-                            ${STATE.quickWorkoutResult.map(ex => `
-                                <div onclick="abrirModalExercicio('${ex.id}')" class="bg-[#14100D] border border-[#2A1F17] rounded-2xl p-3 flex items-center gap-3 cursor-pointer">
-                                    ${renderExerciseMedia(ex, 'w-14 h-14')}
-                                    <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-sm text-white truncate">${ex.name}</p>
-                                        <p class="text-xs text-gray-400">3 sets • 12 reps • ${ex.muscle}</p>
-                                    </div>
-                                    <span class="text-neon">›</span>
-                                </div>
-                            `).join('')}
-                            <button onclick="abrirModalExercicio('${STATE.quickWorkoutResult[0].id}')" class="w-full py-4 rounded-full neon-btn font-black text-sm">INICIAR TREINO</button>
-                        </div>
-                    ` : `
-                        <!-- Duração -->
-                        <div>
-                            <p class="text-[11px] font-black text-gray-400 uppercase mb-2">DURAÇÃO</p>
-                            <div class="grid grid-cols-3 gap-2">
-                                ${['30 min', '40 min', '50 min', '60 min', '75 min', '80 min'].map(d => `
-                                    <button onclick="STATE.quickConfig.duration='${d}'; renderMainTab();" class="py-2.5 rounded-xl text-xs font-bold border ${qc.duration === d ? 'neon-card-active text-white' : 'bg-[#14100D] border-[#2A1F17] text-gray-400'}">${d}</button>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Dificuldade -->
-                        <div>
-                            <p class="text-[11px] font-black text-gray-400 uppercase mb-2">DIFICULDADE</p>
-                            <div class="grid grid-cols-3 gap-2">
-                                ${['Iniciante', 'Intermediário', 'Avançado'].map(d => `
-                                    <button onclick="STATE.quickConfig.difficulty='${d}'; renderMainTab();" class="py-2.5 rounded-xl text-xs font-bold border ${qc.difficulty === d ? 'neon-card-active text-white' : 'bg-[#14100D] border-[#2A1F17] text-gray-400'}">${d}</button>
-                                `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Cardio Switch -->
-                        <div class="bg-[#14100D] border border-[#2A1F17] rounded-2xl p-3.5 flex items-center justify-between">
-                            <div>
-                                <p class="font-bold text-sm text-white">Adicionar Cardio</p>
-                                <p class="text-[11px] text-gray-400">Adicione 15 min no início ou fim</p>
-                            </div>
-                            <button onclick="STATE.quickConfig.addCardio=!STATE.quickConfig.addCardio; renderMainTab();" class="w-12 h-7 rounded-full transition p-1 ${qc.addCardio ? 'bg-neon' : 'bg-[#2E241D]'}">
-                                <div class="w-5 h-5 rounded-full bg-white transition transform ${qc.addCardio ? 'translate-x-5' : ''}"></div>
-                            </button>
-                        </div>
-
-                        <!-- Grade de Foco Muscular Anatômico -->
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <p class="text-[11px] font-black text-gray-300 uppercase">FOCO MUSCULAR</p>
-                                <button onclick="STATE.quickConfig.fullBody=!STATE.quickConfig.fullBody; renderMainTab();" class="flex items-center gap-2 text-xs font-bold text-gray-300">
-                                    Corpo todo
-                                    <span class="w-9 h-5 rounded-full p-0.5 inline-flex ${qc.fullBody ? 'bg-neon justify-end' : 'bg-[#2E241D] justify-start'}"><span class="w-4 h-4 rounded-full bg-white"></span></span>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2.5">
-                                ${allMuscles.map(m => {
-                                    const active = qc.fullBody || qc.muscles.includes(m);
-                                    return `
-                                    <button onclick="toggleQuickMuscle('${m}')" class="p-2.5 rounded-2xl border flex flex-col items-center gap-1 transition ${active ? 'neon-card-active' : 'bg-[#14100D] border-[#281E16]'}">
-                                        ${renderMuscleIconSVG(m, active)}
-                                        <span class="text-[11px] font-bold ${active ? 'text-white' : 'text-gray-400'}">${m}</span>
-                                    </button>`;
-                                }).join('')}
-                            </div>
-                        </div>
-
-                        <button onclick="gerarTreinoRapido(); renderMainTab();" class="w-full py-4 rounded-full neon-btn font-black text-sm">CRIAR TREINO RÁPIDO</button>
-                    `}
-                </div>`;
-        }
-
-        function toggleQuickMuscle(m) {
-            STATE.quickConfig.fullBody = false;
-            const list = STATE.quickConfig.muscles;
-            if (list.includes(m)) STATE.quickConfig.muscles = list.filter(x => x !== m);
-            else list.push(m);
+        function alternarFavPlano(id) {
+            const p = STATE.trainingPlans.find(x => x.id === id);
+            if (!p) return;
+            p.fav = !p.fav;
+            mostrarToast(p.fav ? 'Plano salvo nos favoritos ★' : 'Removido dos favoritos');
             renderMainTab();
         }
-
-        function gerarTreinoRapido() {
-            const qc = STATE.quickConfig;
-            let filtered = qc.fullBody
-                ? STATE.exercises.slice(0, 6)
-                : STATE.exercises.filter(e => qc.muscles.includes(e.muscle));
-            if (filtered.length === 0) filtered = STATE.exercises.slice(0, 5);
-            STATE.quickWorkoutResult = filtered;
-            mostrarToast('Treino rápido gerado com sucesso! ⚡');
-        }
-
-        // --- ABA 3: PROGRESSO ---
+        // --- ABA 3: PROGRESSO (COM ANÁLISES, RECUPERAÇÃO, DISTRIBUIÇÃO E ACORDEÃO MÚSCULO ALVO) ---
         function renderAbaProgresso(container) {
             const s = STATE.stats;
             const days = [['DOM', 15], ['SEG', 16], ['TER', 17], ['QUA', 18], ['QUI', 19], ['SEX', 20], ['SAB', 21]];
+
+            // Dados dinâmicos do gráfico de barras de Análises (Vídeo 2)
+            const tab = STATE.progressChartTab;
+            const chartConfig = {
+                tempo: { total: Math.max(1, s.minutes || 1) + 'min', avg: Math.max(1, s.minutes || 1) + 'min', color: '#FF6A00', label: 'Tempo por dia', vals: [0, 0, 0, 0, 0, 0, Math.min(100, Math.max(18, s.minutes * 4))] },
+                calorias: { total: Math.max(14, s.calories) + ' kcal', avg: Math.max(14, s.calories) + ' kcal', color: '#F59E0B', label: 'Calorias por dia', vals: [0, 0, 0, 0, 0, 0, Math.min(100, Math.max(35, s.calories / 5))] },
+                volume: { total: Math.max(280, s.volumeKg) + ' kg', avg: Math.max(280, s.volumeKg) + ' kg', color: '#C084FC', label: 'Volume por dia', vals: [0, 0, 0, 0, 0, 0, Math.min(100, Math.max(55, s.volumeKg / 25))] },
+                reps: { total: Math.max(40, (s.setsByGroup.empurrar + s.setsByGroup.puxar + s.setsByGroup.perna + s.setsByGroup.core) * 10 + 40), avg: '240', color: '#FACC15', label: 'Reps por dia', vals: [0, 0, 0, 0, 0, 0, 82] }
+            }[tab];
+
+            const muscleGroups = [
+                { key: 'empurrar', label: 'Músculos de Empurrar', done: s.setsByGroup.empurrar, goal: 66, iconM: 'Peito', subs: [['Peito', 12], ['Ombros', 34], ['Tríceps', 20]] },
+                { key: 'puxar', label: 'Músculos de Puxar', done: s.setsByGroup.puxar, goal: 58, iconM: 'Costas', subs: [['Costas', 24], ['Bíceps', 18], ['Antebraços', 4], ['Trapézio', 12]] },
+                { key: 'perna', label: 'Músculos de Perna', done: s.setsByGroup.perna, goal: 32, iconM: 'Pernas', subs: [['Quadríceps', 8], ['Posteriores', 10], ['Glúteos', 8], ['Panturrilhas', 4], ['Adutores', 2]] },
+                { key: 'core', label: 'Músculos do Core', done: s.setsByGroup.core, goal: 8, iconM: 'Abdômen', subs: [['Abdômen', 8]] }
+            ];
+
             container.innerHTML = `
                 <div class="px-5 pt-2 space-y-5">
                     <div class="flex items-center justify-between">
@@ -1435,53 +1614,88 @@
                             <div><p class="text-2xl font-black text-white">${s.streak}</p><p class="text-[11px] text-gray-400">Ofensiva diária</p></div>
                             <span class="w-9 h-9 rounded-full bg-neon/15 text-neon flex items-center justify-center">🔥</span>
                         </div>
-                        <div class="bg-[#14100D] border border-[#2B2017] rounded-2xl p-4 flex items-center justify-between">
-                            <div><p class="text-xl font-black text-neon">${s.calories}</p><p class="text-[11px] text-gray-400">Calorias (kcal)</p></div>
-                            <span class="text-lg">⚡</span>
+                    </div>
+
+                    <!-- ANÁLISES COM GRÁFICO DE BARRAS (TEMPO / CALORIAS / VOLUME / REPS) -->
+                    <div class="bg-[#14100D] border border-[#2B2017] rounded-3xl p-4 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] font-black text-gray-300 uppercase">ANÁLISES</p>
+                            <button onclick="abrirModalDistribuicao()" class="text-xs text-neon font-bold">Explorar detalhes ›</button>
                         </div>
-                        <div class="bg-[#14100D] border border-[#2B2017] rounded-2xl p-4 flex items-center justify-between">
-                            <div><p class="text-xl font-black text-white">${s.volumeKg}</p><p class="text-[11px] text-gray-400">Volume (kg)</p></div>
-                            <span class="text-lg">💪</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><p class="text-xl font-black text-white">${chartConfig.total}</p><p class="text-[10px] text-gray-400">Total esta semana</p></div>
+                            <div><p class="text-xl font-black text-white">${chartConfig.avg}</p><p class="text-[10px] text-gray-400">Média por treino</p></div>
+                        </div>
+                        <!-- Barras -->
+                        <div class="h-28 flex items-end justify-between gap-2 pt-3 border-b border-white/10 pb-2 px-1">
+                            ${chartConfig.vals.map(v => `
+                                <div class="flex-1 flex flex-col items-center justify-end h-full">
+                                    <div class="w-full rounded-t-md transition-all duration-300" style="height:${Math.max(8, v)}%; background:${v > 0 ? chartConfig.color : '#2A211B'};"></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="grid grid-cols-4 bg-[#0D0A08] p-1 rounded-full border border-[#271D16] text-[9px] font-black">
+                            ${[['tempo','TEMPO'],['calorias','CALORIAS'],['volume','VOLUME'],['reps','REPS']].map(([k, lbl]) => `
+                                <button onclick="STATE.progressChartTab='${k}'; renderMainTab();" class="py-1.5 rounded-full transition ${tab===k ? 'bg-neon text-black' : 'text-gray-400'}">${lbl}</button>
+                            `).join('')}
                         </div>
                     </div>
 
-                    <!-- Gráfico Radar Hexagonal (Distribuição Muscular em Laranja Neon) -->
+                    <!-- RECUPERAÇÃO MUSCULAR -->
+                    <div class="bg-[#14100D] border border-[#2B2017] rounded-3xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[11px] font-black text-gray-300 uppercase">RECUPERAÇÃO MUSCULAR</p>
+                            <button onclick="abrirModalRecuperacao()" class="text-xs text-neon font-bold">Explorar detalhes ›</button>
+                        </div>
+                        <div onclick="abrirModalRecuperacao()" class="flex justify-around py-2 cursor-pointer">
+                            ${renderBodySilhouetteSVG(false, 'w-24 h-36')}
+                            ${renderBodySilhouetteSVG(true, 'w-24 h-36')}
+                        </div>
+                        <div class="divide-y divide-white/5 text-xs">
+                            <div class="py-2 flex justify-between"><span class="text-gray-400">Músculos Prontos</span><strong class="text-white">${Math.max(0, 16 - STATE.stats.workoutsDone)}</strong></div>
+                            <div class="py-2 flex justify-between"><span class="text-gray-400">Em Recuperação</span><strong class="text-neon">${Math.min(16, STATE.stats.workoutsDone)}</strong></div>
+                            <div class="py-2 flex justify-between"><span class="text-gray-400">Músculos Fadigados</span><strong class="text-gray-300">0</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- DISTRIBUIÇÃO MUSCULAR -->
                     <div class="bg-[#14100D] border border-[#2B2017] rounded-3xl p-4">
-                        <p class="text-[11px] font-black text-gray-300 uppercase mb-2">DISTRIBUIÇÃO MUSCULAR</p>
-                        <div class="flex justify-center">
-                            <svg viewBox="0 0 240 200" class="w-60 h-48">
-                                <polygon points="120,25 185,62 185,138 120,175 55,138 55,62" fill="none" stroke="#2D221A" stroke-width="1.5"/>
-                                <polygon points="120,50 163,75 163,125 120,150 77,125 77,75" fill="none" stroke="#2D221A" stroke-width="1"/>
-                                <polygon points="120,75 142,88 142,112 120,125 98,112 98,88" fill="none" stroke="#2D221A" stroke-width="1"/>
-                                <!-- Polígono de Dados Neon -->
-                                <polygon points="120,${s.setsByGroup.perna>0?40:78} ${s.setsByGroup.empurrar>0?175:142},72 ${s.setsByGroup.empurrar>0?165:138},124 120,${s.setsByGroup.puxar>0?162:128} ${s.setsByGroup.core>0?68:95},120 82,78" fill="rgba(255,106,0,0.32)" stroke="#FF6A00" stroke-width="2.5"/>
-                                <text x="120" y="16" text-anchor="middle" fill="#D1C7BF" font-size="9" font-weight="800">PERNAS</text>
-                                <text x="200" y="62" text-anchor="start" fill="#D1C7BF" font-size="9" font-weight="800">PEITORAL</text>
-                                <text x="200" y="145" text-anchor="start" fill="#D1C7BF" font-size="9" font-weight="800">OMBROS</text>
-                                <text x="120" y="192" text-anchor="middle" fill="#D1C7BF" font-size="9" font-weight="800">COSTAS</text>
-                                <text x="40" y="145" text-anchor="end" fill="#D1C7BF" font-size="9" font-weight="800">CORE</text>
-                                <text x="40" y="62" text-anchor="end" fill="#D1C7BF" font-size="9" font-weight="800">BRAÇOS</text>
-                            </svg>
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[11px] font-black text-gray-300 uppercase">DISTRIBUIÇÃO MUSCULAR</p>
+                            <button onclick="abrirModalDistribuicao()" class="text-xs text-neon font-bold">Explorar detalhes ›</button>
+                        </div>
+                        <div onclick="abrirModalDistribuicao()" class="flex justify-center cursor-pointer">
+                            ${renderRadarHexagonSVG('#FF6A00', 'rgba(255,106,0,0.32)')}
                         </div>
                     </div>
 
-                    <!-- Músculo Alvo -->
+                    <!-- MÚSCULO ALVO (ACORDEÃO EXPANSÍVEL - VÍDEO 3) -->
                     <div class="space-y-2.5">
                         <p class="text-[11px] font-black text-gray-300 uppercase">MÚSCULO ALVO</p>
-                        ${[
-                            ['Músculos de Empurrar', s.setsByGroup.empurrar, 66, 'Peito'],
-                            ['Músculos de Puxar', s.setsByGroup.puxar, 58, 'Costas'],
-                            ['Músculos de Perna', s.setsByGroup.perna, 32, 'Pernas'],
-                            ['Músculos do Core', s.setsByGroup.core, 8, 'Abdômen']
-                        ].map(([label, done, goal, iconM]) => `
-                            <div class="bg-[#14100D] border border-[#281E16] rounded-2xl p-3 flex items-center gap-3">
-                                <div class="w-11 h-11 rounded-full bg-[#1E1611] flex items-center justify-center">${renderMuscleIconSVG(iconM, done > 0)}</div>
-                                <div class="flex-1">
-                                    <p class="text-sm font-bold text-white">${label}</p>
-                                    <p class="text-xs text-gray-400"><span class="text-neon font-bold">${done}</span> / ${goal} Sets</p>
-                                </div>
-                            </div>
-                        `).join('')}
+                        ${muscleGroups.map(mg => {
+                            const isOpen = !!STATE.expandedMuscleGroups[mg.key];
+                            return `
+                            <div class="bg-[#14100D] border border-[#281E16] rounded-2xl overflow-hidden transition">
+                                <button onclick="STATE.expandedMuscleGroups['${mg.key}']=!STATE.expandedMuscleGroups['${mg.key}']; renderMainTab();" class="w-full p-3.5 flex items-center gap-3 text-left">
+                                    <div class="w-11 h-11 rounded-full bg-[#1E1611] flex items-center justify-center">${renderMuscleIconSVG(mg.iconM, mg.done > 0)}</div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-bold text-white">${mg.label}</p>
+                                        <p class="text-xs text-gray-400"><span class="text-neon font-bold">${mg.done}</span> / ${mg.goal} Sets</p>
+                                    </div>
+                                    <span class="text-gray-400 transition transform ${isOpen ? 'rotate-180 text-neon' : ''}">⌄</span>
+                                </button>
+                                ${isOpen ? `
+                                    <div class="px-4 pb-3 pt-1 border-t border-white/5 space-y-2 bg-[#100C0A]">
+                                        ${mg.subs.map(([mName, mGoal]) => `
+                                            <div class="flex items-center justify-between text-xs py-1">
+                                                <span class="text-gray-300 font-semibold">${mName}</span>
+                                                <span class="text-gray-400"><strong class="text-white">${STATE.muscleSetCounts[mName] || 0}</strong> / ${mGoal} Sets</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>`;
+                        }).join('')}
                     </div>
                 </div>`;
         }
@@ -1569,7 +1783,10 @@
                     <div class="bg-[#14100D] border border-[#281E16] rounded-3xl divide-y divide-white/5 text-sm">
                         <div class="p-4 flex justify-between"><span class="text-gray-300">Unidades de Medida</span><span class="text-gray-400 font-semibold">kg/cm</span></div>
                         <div class="p-4 flex justify-between"><span class="text-gray-300">Idioma</span><span class="text-gray-400 font-semibold">Português</span></div>
-                        <div class="p-4 flex justify-between"><span class="text-gray-300">🔥 Strava</span><span class="text-neon font-semibold">Conectar ›</span></div>
+                        <div onclick="abrirPreferencias()" class="p-4 flex justify-between cursor-pointer hover:bg-white/5"><span class="text-gray-300">Preferências do Plano</span><span class="text-neon font-semibold">Editar ›</span></div>
+                        <div onclick="abrirPaywallAds()" class="p-4 flex justify-between cursor-pointer hover:bg-white/5"><span class="text-gray-300">Treinar sem Anúncios</span><span class="text-neon font-semibold">Premium ›</span></div>
+                        <div onclick="abrirModalLegal('faq')" class="p-4 flex justify-between cursor-pointer hover:bg-white/5"><span class="text-gray-300">Ajuda (FAQ)</span><span class="text-gray-400">›</span></div>
+                        <div onclick="abrirModalLegal('privacidade')" class="p-4 flex justify-between cursor-pointer hover:bg-white/5"><span class="text-gray-300">Termos e Políticas</span><span class="text-gray-400">›</span></div>
                         <div class="p-4 flex justify-between items-center">
                             <span class="text-gray-300">Indique e ganhe</span>
                             <span class="px-2.5 py-1 rounded-full bg-neon text-black text-[10px] font-black">ATÉ R$500/MÊS</span>
@@ -1579,15 +1796,12 @@
         }
 
         // =========================================================================
-        // 5. MODAL INTERATIVO DE EXECUÇÃO DE EXERCÍCIO
+        // 5. MODAL INTERATIVO DE EXECUÇÃO DE EXERCÍCIO (+ DESCANSO AUTOMÁTICO)
         // =========================================================================
         let activeWorkoutSeconds = 0;
         let workoutTimerInterval = null;
-
-        function abrirModalExercicio(id) {
-            const ex = STATE.exercises.find(e => e.id === id);
-            if (!ex) return;
-            STATE.activeExerciseId = id;
+        let restCountdownInterval = null;
+        let restRemaining = 0;
 
             document.getElementById('ex-modal-title').textContent = ex.name;
             document.getElementById('ex-modal-muscle').textContent = `${ex.muscle} • ${ex.equipment}`;
@@ -1631,10 +1845,46 @@
             // Atualiza estatísticas ao vivo
             STATE.stats.calories += 18;
             STATE.stats.volumeKg += (reps * (weight || 10));
+            STATE.stats.minutes += 2;
             if (STATE.stats.setsByGroup[group] !== undefined) STATE.stats.setsByGroup[group]++;
+
+            const ex = STATE.exercises.find(e => e.id === STATE.activeExerciseId);
+            if (ex && STATE.muscleSetCounts[ex.muscle] !== undefined) STATE.muscleSetCounts[ex.muscle]++;
 
             document.getElementById('active-kcal').textContent = `${STATE.stats.calories} kcal`;
             document.getElementById('active-vol').textContent = `${STATE.stats.volumeKg} kg`;
+
+            // Dispara cronômetro de descanso se estiver ativado nas preferências
+            if (STATE.preferences.restEnabled) iniciarDescansoAtivo(STATE.preferences.restSeconds);
+        }
+
+        function iniciarDescansoAtivo(segundos) {
+            clearInterval(restCountdownInterval);
+            restRemaining = segundos;
+            const banner = document.getElementById('rest-timer-banner');
+            const display = document.getElementById('rest-timer-display');
+            banner.classList.remove('hidden');
+            display.textContent = restRemaining + 's';
+            restCountdownInterval = setInterval(() => {
+                restRemaining--;
+                if (restRemaining <= 0) {
+                    clearInterval(restCountdownInterval);
+                    banner.classList.add('hidden');
+                    mostrarToast('Descanso finalizado! Próxima série 🔥');
+                } else {
+                    display.textContent = restRemaining + 's';
+                }
+            }, 1000);
+        }
+
+        function ajustarDescansoAtivo(delta) {
+            restRemaining = Math.max(5, restRemaining + delta);
+            document.getElementById('rest-timer-display').textContent = restRemaining + 's';
+        }
+
+        function pularDescansoAtivo() {
+            clearInterval(restCountdownInterval);
+            document.getElementById('rest-timer-banner').classList.add('hidden');
         }
 
         function alternarFavoritoAtual() {
@@ -1656,225 +1906,382 @@
 
         function fecharModalExercicio() {
             clearInterval(workoutTimerInterval);
+            clearInterval(restCountdownInterval);
+            document.getElementById('rest-timer-banner').classList.add('hidden');
             document.getElementById('modal-exercicio').classList.add('hidden');
         }
 
         // =========================================================================
-        // 6. NOTIFICAÇÕES DE PROMOÇÃO, OFERTA 77% OFF E PRESENTE GRÁTIS
+        // 5B. PREFERÊNCIAS DO PLANO, LESÕES, DESCANSO E ALTERAÇÕES NÃO SALVAS
         // =========================================================================
-        function dispararNotificacaoPromo() {
-            const pushEl = document.getElementById('push-notification');
-            document.getElementById('push-title-text').textContent = STATE.promo.pushTitle;
-            document.getElementById('push-body-text').textContent = STATE.promo.pushBody;
+        let prefDraft = null;
+        let prefDirty = false;
+        let prefSubScreen = 'main'; // 'main' | 'foco' | 'lesoes'
 
-            const imgEl = document.getElementById('push-img-preview');
-            const fallbackEl = document.getElementById('push-icon-fallback');
-            if (STATE.promo.pushImage) {
-                imgEl.src = STATE.promo.pushImage;
-                imgEl.classList.remove('hidden');
-                fallbackEl.classList.add('hidden');
-            } else {
-                imgEl.classList.add('hidden');
-                fallbackEl.classList.remove('hidden');
+        function abrirPreferencias() {
+            prefDraft = JSON.parse(JSON.stringify(STATE.preferences));
+            prefDirty = false;
+            prefSubScreen = 'main';
+            document.getElementById('pref-sheet-backdrop').classList.add('hidden');
+            document.getElementById('modal-preferencias').classList.remove('hidden');
+            renderPreferencias();
+        }
+
+        function renderPreferencias() {
+            const body = document.getElementById('pref-body');
+            if (prefSubScreen === 'foco') {
+                const muscles = ['Peito', 'Costas', 'Ombros', 'Bíceps', 'Tríceps', 'Quadríceps', 'Glúteos', 'Posteriores', 'Abdômen', 'Adutores', 'Abdutores', 'Panturrilhas', 'Trapézio', 'Antebraços'];
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <button onclick="prefSubScreen='main'; renderPreferencias();" class="text-xs font-bold text-neon">← Voltar</button>
+                            <span class="text-xs font-black text-white">Editar músculo trabalhado</span>
+                            <span class="w-10"></span>
+                        </div>
+                        <p class="text-xs text-gray-400">Você pode selecionar até <strong class="text-white">5 músculos</strong> por treino ou escolher o modo corpo inteiro.</p>
+                        <div class="flex items-center justify-between bg-[#15100D] p-3.5 rounded-2xl border border-[#2B2017]">
+                            <span class="text-xs font-black text-white">CORPO INTEIRO</span>
+                            <button onclick="prefDraft.fullBody=!prefDraft.fullBody; prefDirty=true; renderPreferencias();" class="w-12 h-7 rounded-full p-1 transition ${prefDraft.fullBody ? 'bg-neon' : 'bg-[#2E241D]'}">
+                                <div class="w-5 h-5 rounded-full bg-white transition transform ${prefDraft.fullBody ? 'translate-x-5' : ''}"></div>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            ${muscles.map(m => {
+                                const act = prefDraft.fullBody || prefDraft.focusMuscles.includes(m);
+                                return `
+                                <button onclick="togglePrefMuscle('${m}')" class="p-2.5 rounded-2xl border flex flex-col items-center gap-1 transition ${act ? 'neon-card-active' : 'bg-[#14100D] border-[#281E16]'}">
+                                    ${renderMuscleIconSVG(m, act)}
+                                    <span class="text-[11px] font-bold ${act ? 'text-white' : 'text-gray-400'}">${m}</span>
+                                </button>`;
+                            }).join('')}
+                        </div>
+                    </div>`;
+                return;
             }
 
-            pushEl.classList.remove('hidden');
-            setTimeout(() => { pushEl.classList.add('hidden'); }, 7000);
+            if (prefSubScreen === 'lesoes') {
+                const areas = ['Ombros', 'Costas', 'Peito', 'Quadríceps', 'Trapézio', 'Abdutores', 'Panturrilhas', 'Bíceps', 'Posteriores', 'Joelhos'];
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <button onclick="prefSubScreen='main'; renderPreferencias();" class="text-xs font-bold text-neon">← Voltar</button>
+                            <span class="text-xs font-black text-white">Lesões</span>
+                            <span class="w-10"></span>
+                        </div>
+                        <p class="text-xs text-gray-400">Selecione áreas lesionadas ou limitadas. Exercícios que afetam essas áreas serão removidos do seu plano.</p>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            ${areas.map(a => {
+                                const has = prefDraft.injuries.includes(a);
+                                return `
+                                <button onclick="togglePrefInjury('${a}')" class="p-2.5 rounded-2xl border flex flex-col items-center gap-1 transition ${has ? 'bg-red-950/60 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.25)]' : 'bg-[#14100D] border-[#281E16]'}">
+                                    ${renderMuscleIconSVG(a, false)}
+                                    <span class="text-[11px] font-bold ${has ? 'text-red-300' : 'text-gray-400'}">${a}</span>
+                                </button>`;
+                            }).join('')}
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            // Tela Principal de Preferências
+            const focoLabel = prefDraft.fullBody ? 'Corpo inteiro' : `${prefDraft.focusMuscles.length}`;
+            const lesoesLabel = prefDraft.injuries.length === 0 ? 'Nenhuma' : `${prefDraft.injuries.length} músculos`;
+
+            body.innerHTML = `
+                <p class="text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">PREFERÊNCIAS</p>
+                <div class="bg-[#14100D] border border-[#281E16] rounded-3xl divide-y divide-white/5 text-sm">
+                    <button onclick="abrirSheetVariabilidade()" class="w-full p-4 flex items-center justify-between text-left hover:bg-white/5">
+                        <span class="text-gray-200 font-semibold">↕ Variabilidade do Plano</span>
+                        <span class="text-gray-400 font-bold text-xs">${prefDraft.variability} ›</span>
+                    </button>
+                    <button onclick="prefSubScreen='foco'; renderPreferencias();" class="w-full p-4 flex items-center justify-between text-left hover:bg-white/5">
+                        <span class="text-gray-200 font-semibold">💪 Foco Muscular</span>
+                        <span class="text-neon font-bold text-xs">• ${focoLabel} ›</span>
+                    </button>
+                    <button onclick="prefSubScreen='lesoes'; renderPreferencias();" class="w-full p-4 flex items-center justify-between text-left hover:bg-white/5">
+                        <span class="text-gray-200 font-semibold">⚠️ Lesões</span>
+                        <span class="${prefDraft.injuries.length ? 'text-red-400' : 'text-gray-400'} font-bold text-xs">${prefDraft.injuries.length ? '• ' : ''}${lesoesLabel} ›</span>
+                    </button>
+                    <div class="p-4 flex items-center justify-between">
+                        <span class="text-gray-200 font-semibold">🏋️ Preenchimento auto. peso</span>
+                        <button onclick="prefDraft.autoWeight=!prefDraft.autoWeight; prefDirty=true; renderPreferencias();" class="w-12 h-7 rounded-full p-1 transition ${prefDraft.autoWeight ? 'bg-neon' : 'bg-[#2E241D]'}">
+                            <div class="w-5 h-5 rounded-full bg-white transition transform ${prefDraft.autoWeight ? 'translate-x-5' : ''}"></div>
+                        </button>
+                    </div>
+                    <button onclick="abrirSheetDescanso()" class="w-full p-4 flex items-center justify-between text-left hover:bg-white/5">
+                        <span class="text-gray-200 font-semibold">⏱️ Descanso</span>
+                        <span class="text-gray-300 font-bold text-xs">${prefDraft.restEnabled ? prefDraft.restSeconds + 's' : 'Desativado'} ›</span>
+                    </button>
+                </div>`;
         }
 
-        function fecharPush() {
-            document.getElementById('push-notification').classList.add('hidden');
+        function togglePrefMuscle(m) {
+            prefDraft.fullBody = false;
+            prefDirty = true;
+            if (prefDraft.focusMuscles.includes(m)) prefDraft.focusMuscles = prefDraft.focusMuscles.filter(x => x !== m);
+            else prefDraft.focusMuscles.push(m);
+            renderPreferencias();
         }
 
-        function abrirOferta77() {
-            fecharPush();
-            document.getElementById('offer-badge-pct').textContent = STATE.promo.discountText;
-            document.getElementById('offer-price-text').textContent = STATE.promo.priceText;
-            document.getElementById('modal-oferta-77').classList.remove('hidden');
+        function togglePrefInjury(a) {
+            prefDirty = true;
+            if (prefDraft.injuries.includes(a)) prefDraft.injuries = prefDraft.injuries.filter(x => x !== a);
+            else prefDraft.injuries.push(a);
+            renderPreferencias();
         }
 
-        function fecharOferta77() {
-            document.getElementById('modal-oferta-77').classList.add('hidden');
-            if (STATE.currentView === 'onboarding') abrirPresenteGratis();
+        function abrirSheetVariabilidade() {
+            const opts = [
+                { t: 'Equilibrado', rec: true, d: 'Atualiza a cada 6 semanas com base no seu progresso.' },
+                { t: 'Variado', rec: false, d: 'Atualiza a cada 4 semanas com base no seu progresso.' },
+                { t: 'Fixo', rec: false, d: 'Sem atualizações automáticas. Seu plano fica o mesmo.' },
+                { t: 'Personalizado', rec: false, d: 'Defina a frequência de atualização.' }
+            ];
+            document.getElementById('pref-sheet-content').innerHTML = `
+                <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+                <h3 class="text-center font-black text-base text-white mb-4">Variabilidade do Plano de Treino</h3>
+                <div class="space-y-3">
+                    ${opts.map(o => `
+                        <button onclick="prefDraft.variability='${o.t}'; prefDirty=true; fecharPrefSheet(); renderPreferencias();" class="w-full p-4 rounded-2xl border text-left flex items-center justify-between ${prefDraft.variability===o.t ? 'neon-card-active' : 'bg-[#1A1410] border-[#2C2118]'}">
+                            <div class="pr-3">
+                                <p class="font-bold text-sm text-white flex items-center gap-2">${o.t} ${o.rec ? '<span class="px-2 py-0.5 rounded bg-neon text-black text-[9px] font-black">RECOMENDADO</span>' : ''}</p>
+                                <p class="text-xs text-gray-400 mt-1">${o.d}</p>
+                            </div>
+                            <span class="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${prefDraft.variability===o.t ? 'border-neon' : 'border-gray-500'}">
+                                ${prefDraft.variability===o.t ? '<span class="w-2.5 h-2.5 rounded-full bg-neon"></span>' : ''}
+                            </span>
+                        </button>
+                    `).join('')}
+                </div>`;
+            document.getElementById('pref-sheet-backdrop').classList.remove('hidden');
         }
 
-        function ativarPremium() {
-            STATE.isPremium = true;
-            document.getElementById('modal-oferta-77').classList.add('hidden');
-            document.getElementById('floating-promo-bar').classList.add('hidden');
-            entrarNoApp();
-            mostrarToast('Parabéns! ForjeFit Premium ativado 👑');
+        function abrirSheetDescanso() {
+            const renderDesc = () => {
+                document.getElementById('pref-sheet-content').innerHTML = `
+                    <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+                    <h3 class="text-center font-black text-base text-white mb-4">Tempo de descanso padrão</h3>
+                    <div class="flex items-center justify-between mb-5">
+                        <span class="font-bold text-sm text-white">Descanso</span>
+                        <button id="toggle-rest-btn" class="w-12 h-7 rounded-full p-1 transition ${prefDraft.restEnabled ? 'bg-neon' : 'bg-[#2E241D]'}">
+                            <div class="w-5 h-5 rounded-full bg-white transition transform ${prefDraft.restEnabled ? 'translate-x-5' : ''}"></div>
+                        </button>
+                    </div>
+                    ${prefDraft.restEnabled ? `
+                        <div class="bg-[#1B140F] border border-neon/40 rounded-2xl p-5 text-center space-y-4">
+                            <p class="text-4xl font-black text-white">${prefDraft.restSeconds} <span class="text-sm text-neon">SEG</span></p>
+                            <input type="range" min="10" max="240" step="5" value="${prefDraft.restSeconds}" oninput="prefDraft.restSeconds=+this.value; prefDirty=true; abrirSheetDescanso();" class="w-full">
+                            <div class="flex justify-between text-[10px] text-gray-400"><span>10s</span><span>90s</span><span>180s</span><span>240s</span></div>
+                        </div>
+                    ` : `
+                        <div class="py-8 text-center space-y-2">
+                            <p class="font-black text-sm text-white">Tempo de descanso desativado</p>
+                            <p class="text-xs text-gray-400">Você está treinando sem parar: sem pausas entre os exercícios. Pronto para manter o ritmo?</p>
+                        </div>
+                    `}
+                    <button onclick="fecharPrefSheet(); renderPreferencias();" class="w-full py-3.5 mt-5 rounded-full neon-btn font-black text-xs">CONFIRMAR</button>`;
+                document.getElementById('toggle-rest-btn').onclick = () => {
+                    prefDraft.restEnabled = !prefDraft.restEnabled;
+                    prefDirty = true;
+                    renderDesc();
+                };
+            };
+            renderDesc();
+            document.getElementById('pref-sheet-backdrop').classList.remove('hidden');
         }
 
-        function abrirPresenteGratis() {
-            document.getElementById('modal-oferta-77').classList.add('hidden');
-            document.getElementById('modal-presente').classList.remove('hidden');
+        function tentarFecharPreferencias() {
+            if (!prefDirty) {
+                document.getElementById('modal-preferencias').classList.add('hidden');
+                return;
+            }
+            // Modal "Alterações não salvas" (Vídeo 2)
+            document.getElementById('pref-sheet-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="w-11 h-11 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-black">!</div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">Alterações não salvas</h3>
+                        <p class="text-xs text-gray-400 mt-1">Você tem alterações que ainda não foram aplicadas. Deseja sair sem aplicá-las?</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="fecharPrefSheet(); document.getElementById('modal-preferencias').classList.add('hidden');" class="py-3.5 rounded-full bg-[#241B15] text-white font-black text-[11px]">DESCARTAR ALTERAÇÕES</button>
+                        <button onclick="salvarPreferencias();" class="py-3.5 rounded-full neon-btn font-black text-[11px]">APLICAR ALTERAÇÕES</button>
+                    </div>
+                </div>`;
+            document.getElementById('pref-sheet-backdrop').classList.remove('hidden');
         }
 
-        function fecharPresenteEntrar() {
-            document.getElementById('modal-presente').classList.add('hidden');
-            entrarNoApp();
-            setTimeout(dispararNotificacaoPromo, 1500);
-        }
-
-        function abrirModalCardio() { document.getElementById('modal-cardio').classList.remove('hidden'); }
-        function fecharModalCardio() { document.getElementById('modal-cardio').classList.add('hidden'); }
-        function registrarCardioManual() {
-            STATE.stats.calories += 210;
-            STATE.stats.workoutsDone++;
-            fecharModalCardio();
-            mostrarToast('Cardio registrado (+210 kcal) 🔥');
+        function salvarPreferencias() {
+            STATE.preferences = JSON.parse(JSON.stringify(prefDraft));
+            prefDirty = false;
+            fecharPrefSheet();
+            document.getElementById('modal-preferencias').classList.add('hidden');
+            mostrarToast('Preferências do plano aplicadas! 🔥');
             renderMainTab();
         }
 
+        function fecharPrefSheet() {
+            document.getElementById('pref-sheet-backdrop').classList.add('hidden');
+        }
+
         // =========================================================================
-        // 7. PAINEL ADMIN COMPLETO (UPLOAD DE FOTOS, GIFS ANIMADOS, VÍDEOS & PUSH)
+        // 5C. RECUPERAÇÃO MUSCULAR, DISTRIBUIÇÃO, PAYWALL SEM ANÚNCIOS E FAQ
         // =========================================================================
-        function abrirAdmin(tab = 'exercicios') {
-            STATE.activeAdminTab = tab;
-            document.getElementById('modal-admin').classList.remove('hidden');
-            mudarAbaAdmin(tab);
+        function renderBodySilhouetteSVG(isBack = false, cls = 'w-48 h-72') {
+            const fatigued = STATE.stats.workoutsDone > 0;
+            const hl = fatigued ? '#FF6A00' : '#2E4A56';
+            return `
+                <svg viewBox="0 0 120 240" class="${cls}">
+                    <circle cx="60" cy="22" r="13" fill="#22363F"/>
+                    <path d="M36 42 Q60 36 84 42 L98 106 L88 110 L79 68 L78 122 L84 225 L68 225 L60 142 L52 225 L36 225 L42 122 L41 68 L32 110 L22 106 Z" fill="#1D2F38" stroke="#365361" stroke-width="1.5"/>
+                    ${isBack ? `
+                        <path d="M44 48 L76 48 L68 88 L52 88 Z" fill="${hl}" class="${fatigued ? 'anim-muscle' : ''}"/>
+                        <rect x="44" y="106" width="14" height="22" rx="6" fill="#2A4450"/>
+                        <rect x="62" y="106" width="14" height="22" rx="6" fill="#2A4450"/>
+                    ` : `
+                        <rect x="43" y="48" width="15" height="16" rx="4" fill="${hl}" class="${fatigued ? 'anim-muscle' : ''}"/>
+                        <rect x="62" y="48" width="15" height="16" rx="4" fill="${hl}" class="${fatigued ? 'anim-muscle' : ''}"/>
+                        <rect x="49" y="70" width="22" height="36" rx="5" fill="#2A4450"/>
+                    `}
+                </svg>`;
         }
 
-        function fecharAdmin() {
-            document.getElementById('modal-admin').classList.add('hidden');
-            sincronizarMarca();
-            if (STATE.currentView === 'app') renderMainTab();
-            else renderOnboarding();
+        function renderRadarHexagonSVG(strokeColor, fillColor) {
+            const s = STATE.stats;
+            return `
+                <svg viewBox="0 0 240 200" class="w-60 h-48">
+                    <polygon points="120,25 185,62 185,138 120,175 55,138 55,62" fill="none" stroke="#2D221A" stroke-width="1.5"/>
+                    <polygon points="120,50 163,75 163,125 120,150 77,125 77,75" fill="none" stroke="#2D221A" stroke-width="1"/>
+                    <polygon points="120,75 142,88 142,112 120,125 98,112 98,88" fill="none" stroke="#2D221A" stroke-width="1"/>
+                    <polygon points="120,${s.setsByGroup.perna>0?40:80} ${s.setsByGroup.empurrar>0?175:142},74 ${s.setsByGroup.empurrar>0?165:138},124 120,${s.setsByGroup.puxar>0?162:128} ${s.setsByGroup.core>0?68:95},120 82,78" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2.5"/>
+                    <text x="120" y="16" text-anchor="middle" fill="#D1C7BF" font-size="9" font-weight="800">PERNAS</text>
+                    <text x="200" y="62" text-anchor="start" fill="#D1C7BF" font-size="9" font-weight="800">PEITORAL</text>
+                    <text x="200" y="145" text-anchor="start" fill="#D1C7BF" font-size="9" font-weight="800">OMBROS</text>
+                    <text x="120" y="192" text-anchor="middle" fill="#D1C7BF" font-size="9" font-weight="800">COSTAS</text>
+                    <text x="40" y="145" text-anchor="end" fill="#D1C7BF" font-size="9" font-weight="800">CORE</text>
+                    <text x="40" y="62" text-anchor="end" fill="#D1C7BF" font-size="9" font-weight="800">BRAÇOS</text>
+                </svg>`;
         }
 
-        function mudarAbaAdmin(tab) {
-            STATE.activeAdminTab = tab;
-            ['exercicios', 'notificacoes', 'fotos'].forEach(t => {
-                const btn = document.getElementById('adm-tab-' + t);
-                if (t === tab) {
-                    btn.className = 'flex-1 py-2 rounded-xl text-[11px] font-bold bg-neon text-black';
-                } else {
-                    btn.className = 'flex-1 py-2 rounded-xl text-[11px] font-bold bg-[#1D1611] text-gray-300';
-                }
-            });
-            renderAdminContent();
+        function abrirModalRecuperacao() {
+            document.getElementById('modal-recuperacao').classList.remove('hidden');
+            renderModalRecuperacao();
         }
 
-        function renderAdminContent() {
-            const box = document.getElementById('admin-content');
+        function renderModalRecuperacao() {
+            const ready = Math.max(0, 16 - STATE.stats.workoutsDone);
+            const recov = Math.min(16, STATE.stats.workoutsDone);
+            document.getElementById('recup-body').innerHTML = `
+                <div class="grid grid-cols-3 text-center bg-[#14100D] border border-[#2B2017] rounded-2xl p-3">
+                    <div><p class="text-xl font-black text-white">${ready}</p><p class="text-[10px] text-gray-400">Músculos Prontos</p></div>
+                    <div><p class="text-xl font-black text-neon">${recov}</p><p class="text-[10px] text-gray-400">Em Recuperação</p></div>
+                    <div><p class="text-xl font-black text-gray-300">0</p><p class="text-[10px] text-gray-400">Fadigados</p></div>
+                </div>
+                <div class="flex flex-col items-center justify-center my-4">
+                    <span class="text-[10px] font-black text-neon uppercase mb-2">${STATE.recupBackView ? 'VISÃO POSTERIOR (COSTAS)' : 'VISÃO ANTERIOR (FRENTE)'}</span>
+                    ${renderBodySilhouetteSVG(STATE.recupBackView, 'w-56 h-80')}
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="STATE.recupBackView=!STATE.recupBackView; renderModalRecuperacao();" class="px-4 py-2.5 rounded-full bg-[#1C1510] border border-neon/40 text-xs font-bold text-white flex items-center gap-2">↻ Girar Corpo</button>
+                    <span class="text-xs text-gray-400">Desde o Último Treino</span>
+                </div>`;
+        }
 
-            if (STATE.activeAdminTab === 'exercicios') {
-                box.innerHTML = `
-                    <!-- Adicionar Novo Exercício com GIF/Imagem -->
-                    <div class="bg-[#15100D] border border-neon/40 rounded-2xl p-4 space-y-3">
-                        <p class="text-xs font-black text-neon uppercase">+ Adicionar Novo Exercício (Com Foto/GIF)</p>
-                        <input id="new-ex-name" type="text" placeholder="Nome do exercício (ex: Leg Press 45)" class="w-full px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                        <div class="grid grid-cols-2 gap-2">
-                            <select id="new-ex-muscle" class="px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                                <option>Peito</option><option>Costas</option><option>Ombros</option><option>Bíceps</option><option>Tríceps</option><option>Quadríceps</option><option>Posteriores</option><option>Glúteos</option><option>Abdômen</option>
-                            </select>
-                            <select id="new-ex-day" class="px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                                <option value="0">DIA 1</option><option value="1">DIA 2</option><option value="2">DIA 3</option><option value="3">DIA 4</option>
-                            </select>
-                        </div>
-                        <label class="block w-full py-2.5 px-3 rounded-xl bg-[#221913] border border-dashed border-neon/60 text-center text-xs font-bold text-neon cursor-pointer">
-                            📁 Escolher GIF animado / Foto / Vídeo
-                            <input id="new-ex-file" type="file" accept="image/*,video/*" class="hidden">
-                        </label>
-                        <button onclick="adminAdicionarExercicio()" class="w-full py-2.5 rounded-xl neon-btn font-black text-xs">ADICIONAR EXERCÍCIO</button>
-                    </div>
+        function abrirInfoRecuperacao() {
+            document.getElementById('recup-info-sheet').classList.remove('hidden');
+        }
 
-                    <!-- Lista para Trocar Foto/GIF de cada Exercício Existente -->
-                    <p class="text-xs font-black text-gray-400 uppercase pt-2">Trocar Foto ou GIF Animado dos Exercícios</p>
-                    <div class="space-y-2.5">
-                        ${STATE.exercises.map(ex => `
-                            <div class="bg-[#15100D] border border-[#291E16] rounded-2xl p-3 flex items-center gap-3">
-                                ${renderExerciseMedia(ex, 'w-12 h-12')}
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-bold text-white truncate">${ex.name}</p>
-                                    <p class="text-[10px] text-gray-400">${ex.muscle} • DIA ${ex.day + 1}</p>
-                                </div>
-                                <label class="px-2.5 py-1.5 rounded-xl bg-neon/20 border border-neon/50 text-neon text-[10px] font-black cursor-pointer hover:bg-neon hover:text-black transition">
-                                    📷 Mídia
-                                    <input type="file" accept="image/*,video/*" class="hidden" onchange="adminUploadMidiaExercicio('${ex.id}', this)">
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>`;
-                return;
+        function abrirModalDistribuicao() {
+            document.getElementById('modal-distribuicao').classList.remove('hidden');
+            renderModalDistribuicao();
+        }
+
+        function renderModalDistribuicao() {
+            document.getElementById('dist-body').innerHTML = `
+                <div class="grid grid-cols-3 bg-[#14100D] p-1 rounded-full border border-[#2A1F17] text-[10px] font-black">
+                    ${['SEMANA', 'MÊS', 'ANO'].map(p => `
+                        <button onclick="STATE.distPeriod='${p}'; renderModalDistribuicao();" class="py-2 rounded-full ${STATE.distPeriod===p ? 'bg-neon text-black' : 'text-gray-400'}">${p}</button>
+                    `).join('')}
+                </div>
+                <p class="text-center text-xs text-gray-300 font-bold">22 nov. - 28 nov. (${STATE.distPeriod})</p>
+                <div class="bg-[#14100D] border border-[#2B2017] rounded-3xl p-4">
+                    <p class="font-bold text-sm text-white mb-2">Séries equivalentes</p>
+                    <div class="flex justify-center">${renderRadarHexagonSVG('#FF6A00', 'rgba(255,106,0,0.32)')}</div>
+                    <p class="text-center text-[11px] text-gray-400 mt-1"><span class="text-neon font-black">—</span> Semana atual &nbsp; ••• Semana anterior</p>
+                </div>
+                <div class="bg-[#14100D] border border-[#2B2017] rounded-3xl p-4">
+                    <p class="font-bold text-sm text-white mb-2">Volume equivalente</p>
+                    <div class="flex justify-center">${renderRadarHexagonSVG('#A855F7', 'rgba(168,85,247,0.3)')}</div>
+                    <p class="text-center text-[11px] text-gray-400 mt-1"><span class="text-purple-400 font-black">—</span> Semana atual &nbsp; ••• Semana anterior</p>
+                </div>`;
+        }
+
+        function abrirPaywallAds() {
+            STATE.paywallChoice = 'premium';
+            document.getElementById('modal-paywall-ads').classList.remove('hidden');
+            selecionarPlanoPaywall('premium');
+        }
+
+        function selecionarPlanoPaywall(choice) {
+            STATE.paywallChoice = choice;
+            const pCard = document.getElementById('pw-opt-premium');
+            const fCard = document.getElementById('pw-opt-free');
+            const btn = document.getElementById('pw-cta-btn');
+            if (choice === 'premium') {
+                pCard.className = 'relative p-4 rounded-2xl neon-card-active cursor-pointer transition';
+                fCard.className = 'p-4 rounded-2xl bg-[#14100D] border border-[#2B2017] cursor-pointer transition';
+                btn.textContent = 'ASSINAR O PREMIUM';
+            } else {
+                pCard.className = 'relative p-4 rounded-2xl bg-[#14100D] border border-[#2B2017] cursor-pointer transition';
+                fCard.className = 'p-4 rounded-2xl neon-card-active cursor-pointer transition';
+                btn.textContent = 'CONTINUAR COM ANÚNCIOS';
             }
+        }
 
-            if (STATE.activeAdminTab === 'notificacoes') {
-                box.innerHTML = `
-                    <div class="bg-[#15100D] border border-[#2B2017] rounded-2xl p-4 space-y-3">
-                        <p class="text-xs font-black text-neon uppercase">🔔 Configurar Notificação Push & Promoção</p>
-                        <div>
-                            <label class="text-[11px] text-gray-400">Título da Notificação</label>
-                            <input type="text" value="${STATE.promo.pushTitle}" oninput="STATE.promo.pushTitle=this.value" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-gray-400">Mensagem da Promoção</label>
-                            <textarea rows="2" oninput="STATE.promo.pushBody=this.value" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">${STATE.promo.pushBody}</textarea>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-[11px] text-gray-400">Desconto (Modal)</label>
-                                <input type="text" value="${STATE.promo.discountText}" oninput="STATE.promo.discountText=this.value" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
+        function confirmarEscolhaPaywall() {
+            document.getElementById('modal-paywall-ads').classList.add('hidden');
+            if (STATE.paywallChoice === 'premium') ativarPremium();
+            else mostrarToast('Continuando no plano gratuito');
+        }
+
+        function abrirModalLegal(tipo) {
+            const title = document.getElementById('faq-legal-title');
+            const body = document.getElementById('faq-legal-body');
+            document.getElementById('modal-faq-legal').classList.remove('hidden');
+
+            if (tipo === 'faq') {
+                title.textContent = 'Perguntas Frequentes';
+                const faqs = [
+                    ['O que é o ' + STATE.brandName + '?', 'É um aplicativo de treino inteligente que cria planos de musculação personalizados para academia ou casa, acompanha recuperação muscular e mostra exercícios animados.'],
+                    ['O aplicativo é gratuito?', 'Sim, de forma limitada. Você pode treinar e explorar exercícios gratuitamente, ou assinar o Premium para liberar todos os gráficos e treinar sem anúncios.'],
+                    ['Posso usar em casa ou sem equipamento?', 'Sim! Basta escolher "Academia em Casa" ou "Peso Corporal" nos filtros ou nas Preferências do Plano.'],
+                    ['Como ajusto peso, repetições ou descanso?', 'Toque em qualquer exercício para editar séries e peso, ou abra o ícone de Preferências em "Meu plano" para ajustar o tempo de descanso padrão (10s a 240s).'],
+                    ['O aplicativo funciona offline?', 'Sim, parcialmente! Depois que seu plano é carregado, você pode concluir seus treinos mesmo sem internet.']
+                ];
+                body.innerHTML = faqs.map(([q, a], idx) => `
+                    <details class="bg-[#14100D] border border-[#2B2017] rounded-2xl p-4 group" ${idx===0?'open':''}>
+                        <summary class="font-bold text-sm text-white cursor-pointer flex justify-between items-center list-none">
+                            <span>${q}</span><span class="text-neon font-black">+</span>
+                        </summary>
+                        <p class="text-xs text-gray-300 mt-3 leading-relaxed">${a}</p>
+                        <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
+                            <span class="text-[10px] text-gray-400">Este artigo foi útil?</span>
+                            <div class="flex gap-2">
+                                <button onclick="mostrarToast('Obrigado pelo feedback! 🔥')" class="px-3 py-1 rounded-full border border-neon/40 text-[10px] font-bold text-neon">SIM</button>
+                                <button onclick="mostrarToast('Feedback registrado!')" class="px-3 py-1 rounded-full border border-white/15 text-[10px] font-bold text-gray-400">NÃO</button>
                             </div>
-                            <div>
-                                <label class="text-[11px] text-gray-400">Preço Mensal</label>
-                                <input type="text" value="${STATE.promo.priceText}" oninput="STATE.promo.priceText=this.value" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                            </div>
                         </div>
-                        <label class="block w-full py-3 px-3 rounded-xl bg-[#221913] border border-dashed border-neon/60 text-center text-xs font-bold text-neon cursor-pointer">
-                            🖼️ Enviar Imagem ou GIF da Notificação / Promo
-                            <input type="file" accept="image/*" class="hidden" onchange="adminUploadFotoPromo(this)">
-                        </label>
-                        <button onclick="fecharAdmin(); dispararNotificacaoPromo();" class="w-full py-3 rounded-xl neon-btn font-black text-xs">🚀 DISPARAR NOTIFICAÇÃO AGORA</button>
-                    </div>`;
-                return;
-            }
-
-            if (STATE.activeAdminTab === 'fotos') {
-                box.innerHTML = `
-                    <div class="bg-[#15100D] border border-[#2B2017] rounded-2xl p-4 space-y-3">
-                        <p class="text-xs font-black text-neon uppercase">🏷️ Identidade do App</p>
-                        <div>
-                            <label class="text-[11px] text-gray-400">Nome do App</label>
-                            <input type="text" value="${STATE.brandName}" oninput="STATE.brandName=this.value; sincronizarMarca();" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-gray-400">Nome do Usuário (Perfil)</label>
-                            <input type="text" value="${STATE.userName}" oninput="STATE.userName=this.value" class="w-full mt-1 px-3 py-2 rounded-xl bg-[#0D0A08] border border-[#2D2118] text-xs text-white">
-                        </div>
-                        <label class="block w-full py-2.5 px-3 rounded-xl bg-[#221913] border border-dashed border-neon/60 text-center text-xs font-bold text-neon cursor-pointer">
-                            👤 Enviar Foto de Perfil
-                            <input type="file" accept="image/*" class="hidden" onchange="adminUploadAvatar(this)">
-                        </label>
-                    </div>
-
-                    <div class="bg-[#15100D] border border-[#2B2017] rounded-2xl p-4 space-y-3">
-                        <p class="text-xs font-black text-neon uppercase">🖼️ Capas dos Treinos (Aba Treinos)</p>
-                        ${STATE.workoutCovers.map((c, idx) => `
-                            <div class="flex items-center gap-3">
-                                <img src="${c.img}" class="w-12 h-12 rounded-xl object-cover border border-white/10">
-                                <p class="flex-1 text-xs font-bold text-white truncate">${c.title}</p>
-                                <label class="px-2.5 py-1.5 rounded-xl bg-neon/20 text-neon text-[10px] font-black cursor-pointer">
-                                    Trocar
-                                    <input type="file" accept="image/*" class="hidden" onchange="adminUploadCapa(${idx}, this)">
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <div class="bg-[#15100D] border border-[#2B2017] rounded-2xl p-4 space-y-3">
-                        <p class="text-xs font-black text-neon uppercase">📸 Fotos Antes & Depois (Onboarding)</p>
-                        <div class="grid grid-cols-2 gap-2">
-                            <label class="py-2.5 px-2 rounded-xl bg-[#221913] border border-dashed border-neon/60 text-center text-[11px] font-bold text-neon cursor-pointer">
-                                Foto ANTES
-                                <input type="file" accept="image/*" class="hidden" onchange="adminUploadAntesDepois('beforeImg', this)">
-                            </label>
-                            <label class="py-2.5 px-2 rounded-xl bg-[#221913] border border-dashed border-neon/60 text-center text-[11px] font-bold text-neon cursor-pointer">
-                                Foto DEPOIS
-                                <input type="file" accept="image/*" class="hidden" onchange="adminUploadAntesDepois('afterImg', this)">
-                            </label>
-                        </div>
+                    </details>
+                `).join('');
+            } else {
+                title.textContent = tipo === 'termos' ? 'Termos de Uso' : 'Política de Privacidade';
+                body.innerHTML = `
+                    <div class="bg-[#14100D] border border-[#2B2017] rounded-2xl p-4 space-y-3 text-xs text-gray-300 leading-relaxed">
+                        <p class="text-neon font-black uppercase">${STATE.brandName} — Proteção de Dados (LGPD)</p>
+                        <p>Levamos a sua privacidade a sério. Os dados de treino (gênero, medidas, objetivos, lesões e histórico de séries) são usados exclusivamente para personalizar seus treinos e acompanhar sua evolução.</p>
+                        <p><strong class="text-white">1. Dados de Treino:</strong> Séries, cargas, recuperação muscular e metas ficam sob seu controle.</p>
+                        <p><strong class="text-white">2. Inteligência Artificial:</strong> Utilizada para adaptar o volume de treino e sugerir progressões seguras.</p>
+                        <p><strong class="text-white">3. Cancelamento:</strong> Assinaturas podem ser gerenciadas ou canceladas a qualquer momento.</p>
                     </div>`;
             }
         }
