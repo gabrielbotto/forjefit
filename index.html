@@ -7,20 +7,57 @@
   <title>ForjeFit — Treino & Biomecânica</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./src/styles/app.css" />
-  <script>
-    window.addEventListener('error', function (e) {
-      var box = document.getElementById('boot-err') || document.body.appendChild(Object.assign(document.createElement('pre'), {
-        id: 'boot-err',
-        style: 'position:fixed;inset:12px;z-index:99999;background:#14171C;color:#FF5F00;padding:14px;border-radius:12px;white-space:pre-wrap;font-size:12px;overflow:auto'
-      }));
-      box.textContent += 'Falha: ' + (e.message || (e.target && (e.target.src || e.target.href)) || 'recurso não encontrado') + '\n';
-    }, true);
-  </script>
 </head>
 <body style="margin:0;background:#0B0D10;color:#F8FAFC;font-family:sans-serif">
   <div id="app-root"></div>
   <div id="modal-root"></div>
   <div id="toast-root"></div>
-  <script type="module" src="./src/app.js"></script>
+  <script type="module">
+    function mostrarErro(texto) {
+      let box = document.getElementById('boot-err');
+      if (!box) {
+        box = document.createElement('pre');
+        box.id = 'boot-err';
+        box.style.cssText = 'position:fixed;inset:12px;z-index:99999;background:#14171C;color:#FF5F00;padding:14px;border-radius:12px;white-space:pre-wrap;font-size:12px;overflow:auto;border:1px solid #FF5F00';
+        document.body.appendChild(box);
+      }
+      box.textContent += texto + '\n';
+    }
+
+    const arquivos = [
+      './src/app.js',
+      './src/styles/app.css',
+      './src/core/ui/visuals.js',
+      './src/core/utils/formatters.js',
+      './src/core/utils/haptics.js',
+      './src/data/db/ForjeDB.js',
+      './src/data/seed/exercisesSeed.js',
+      './src/domain/BiomechanicsEngine.js',
+      './src/features/onboarding/OnboardingView.js',
+      './src/features/plan/PlanView.js',
+      './src/features/workout_active/ActiveWorkoutView.js',
+      './src/features/explore/ExploreView.js',
+      './src/features/progress/ProgressView.js',
+      './src/features/exercises/ExercisesView.js',
+      './src/features/profile/ProfileView.js'
+    ];
+
+    Promise.all(
+      arquivos.map((url) =>
+        fetch(url, { cache: 'no-store' })
+          .then((r) => (!r.ok ? `404 Não encontrado: ${url}` : null))
+          .catch(() => `Erro de rede: ${url}`)
+      )
+    ).then((resultados) => {
+      const faltando = resultados.filter(Boolean);
+      if (faltando.length) {
+        mostrarErro('ARQUIVOS COM CAMINHO/NOME ERRADO:\n' + faltando.join('\n'));
+      }
+    });
+
+    import('./src/app.js').catch((err) => {
+      mostrarErro('ERRO REAL NO JS:\n' + (err?.message || err) + '\n\n' + (err?.stack || ''));
+    });
+  </script>
 </body>
 </html>
