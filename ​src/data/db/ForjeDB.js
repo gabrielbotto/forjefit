@@ -1,6 +1,6 @@
 import { EXERCISES_SEED, PARTNER_BENEFITS_SEED } from '../seed/exercisesSeed.js';
 
-const DB_NAME = ForjeFitDB;
+const DB_NAME = 'ForjeFitDB';
 const DB_VERSION = 1;
 
 const STORES = {
