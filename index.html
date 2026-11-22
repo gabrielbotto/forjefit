@@ -11,12 +11,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./src/styles/app.css" />
+  <link rel="stylesheet" href="./%E2%80%8Bsrc/styles/app.css" />
 </head>
-<body style="margin:0;background:#0B0D10;color:#F8FAFC">
+<body style="margin:0;background:#0B0D10;color:#F8FAFC;font-family:sans-serif">
   <div id="app-root"></div>
   <div id="modal-root"></div>
   <div id="toast-root"></div>
-  <script type="module" src="./src/app.js"></script>
+  <script type="module">
+    import('./\u200Bsrc/app.js').catch((err) => {
+      document.body.innerHTML = '<pre style="color:#FF5F00;padding:16px;white-space:pre-wrap">' + (err?.stack || err) + '</pre>';
+    });
+  </script>
 </body>
 </html>
