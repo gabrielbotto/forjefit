@@ -18,9 +18,10 @@
   <div id="modal-root"></div>
   <div id="toast-root"></div>
   <script type="module">
-    import('./\u200Bsrc/app.js').catch((err) => {
-      document.body.innerHTML = '<pre style="color:#FF5F00;padding:16px;white-space:pre-wrap">' + (err?.stack || err) + '</pre>';
-    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+    import('./\u200Bsrc/app.js');
   </script>
 </body>
 </html>
